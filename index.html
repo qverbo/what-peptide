@@ -346,8 +346,9 @@ async function getRecommendations() {
     if (data.error) throw new Error(data.error.message);
 
     const text = (data.content || []).map(b => b.text || '').join('');
-    const clean = text.replace(/```json|```/g, '').trim();
-    const peptides = JSON.parse(clean);
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No valid response received. Please try again.');
+    const peptides = JSON.parse(match[0]);
 
     container.innerHTML = '';
     expandedCards.clear();
