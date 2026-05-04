@@ -108,8 +108,10 @@
   .stack-tag { font-size: 12px; padding: 4px 10px; border-radius: 6px; background: rgba(22,163,74,0.07); color: #15803d; border: 1px solid rgba(22,163,74,0.15); }
   .dosing-route { font-size: 12px; color: #64748b; margin-top: 4px; }
 
-  .card-toggle { border-top: 1px solid rgba(0,0,0,0.05); padding: 10px 28px; display: flex; justify-content: flex-end; cursor: pointer; }
+  .card-toggle { border-top: 1px solid rgba(0,0,0,0.05); padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .toggle-text { font-size: 11px; color: #64748b; letter-spacing: 0.04em; }
+  .source-btn { display: inline-block; padding: 7px 16px; background: #0f172a; color: #fff; border-radius: 8px; font-size: 12px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
+  .source-btn:hover { background: #1e293b; }
 
   .skeleton { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; height: 150px; animation: pulse 1.8s ease infinite; }
 
@@ -178,6 +180,28 @@ Return 4-5 peptides sorted by matchScore descending. Each object must have EXACT
 researchLevel must be one of exactly: "Preclinical", "Anecdotal", "Early Clinical"
 Be accurate. Include real side effects. Note research limitations honestly.`;
 
+// ── AFFILIATE LINKS ──────────────────────────────────────────────
+// Add your affiliate URL for each peptide name exactly as Claude returns it.
+// Any peptide without a link here simply won't show a "Where to source" button.
+const AFFILIATE_LINKS = {
+  "BPC-157":          "https://YOUR-AFFILIATE-LINK.com/bpc-157",
+  "TB-500":           "https://YOUR-AFFILIATE-LINK.com/tb-500",
+  "Ipamorelin":       "https://YOUR-AFFILIATE-LINK.com/ipamorelin",
+  "CJC-1295":         "https://YOUR-AFFILIATE-LINK.com/cjc-1295",
+  "KPV":              "https://YOUR-AFFILIATE-LINK.com/kpv",
+  "GHK-Cu":           "https://YOUR-AFFILIATE-LINK.com/ghk-cu",
+  "Semax":            "https://YOUR-AFFILIATE-LINK.com/semax",
+  "Selank":           "https://YOUR-AFFILIATE-LINK.com/selank",
+  "Epithalon":        "https://YOUR-AFFILIATE-LINK.com/epithalon",
+  "Retatrutide":      "https://YOUR-AFFILIATE-LINK.com/retatrutide",
+  "Bromantane":       "https://YOUR-AFFILIATE-LINK.com/bromantane",
+  "DSIP":             "https://YOUR-AFFILIATE-LINK.com/dsip",
+  "PT-141":           "https://YOUR-AFFILIATE-LINK.com/pt-141",
+  "Hexarelin":        "https://YOUR-AFFILIATE-LINK.com/hexarelin",
+  "5-Amino-1MQ":      "https://YOUR-AFFILIATE-LINK.com/5-amino-1mq",
+};
+// ─────────────────────────────────────────────────────────────────
+
 let selected = new Set();
 let expandedCards = new Set();
 
@@ -223,6 +247,10 @@ function buildCard(p, i) {
   const benefits = (p.keyBenefits || []).slice(0,3).map(b => `<span class="benefit-tag">${b}</span>`).join('');
   const effects = (p.sideEffects || []).map(s => `<div class="side-effect-item"><span class="side-effect-dash">—</span>${s}</div>`).join('');
   const stacks = (p.stacksWith || []).map(s => `<span class="stack-tag">${s}</span>`).join('');
+  const affiliateUrl = AFFILIATE_LINKS[p.name];
+  const sourceBtn = affiliateUrl
+    ? `<a class="source-btn" href="${affiliateUrl}" target="_blank" rel="noopener">Where to source →</a>`
+    : '';
 
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
@@ -261,8 +289,9 @@ function buildCard(p, i) {
         <div class="stack-tags">${stacks}</div>
       </div>
     </div>
-    <div class="card-toggle" onclick="toggleCard(${i})">
-      <span class="toggle-text" id="card-${i}-toggle">View details ↓</span>
+    <div class="card-toggle">
+      <span class="toggle-text" id="card-${i}-toggle" onclick="toggleCard(${i})">View details ↓</span>
+      ${sourceBtn}
     </div>`;
   return card;
 }
@@ -306,7 +335,7 @@ async function getRecommendations() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: SYSTEM,
         messages: [{ role: 'user', content: msg }]
