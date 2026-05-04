@@ -181,8 +181,6 @@ researchLevel must be one of exactly: "Preclinical", "Anecdotal", "Early Clinica
 Be accurate. Include real side effects. Note research limitations honestly.`;
 
 // ── AFFILIATE LINKS ──────────────────────────────────────────────
-// Add your affiliate URL for each peptide name exactly as Claude returns it.
-// Any peptide without a link here simply won't show a "Where to source" button.
 const AFFILIATE_LINKS = {
   "BPC-157":          "https://YOUR-AFFILIATE-LINK.com/bpc-157",
   "TB-500":           "https://YOUR-AFFILIATE-LINK.com/tb-500",
@@ -335,20 +333,45 @@ async function getRecommendations() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 2000,
+        model: 'claude-sonnet-4-5',
+        max_tokens: 1500,
         system: SYSTEM,
         messages: [{ role: 'user', content: msg }]
       })
     });
 
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
+    // Read body as text first so empty / non-JSON responses give a real error
+    // instead of "Unexpected end of JSON input".
+    const raw = await res.text();
+    if (!raw) {
+      throw new Error(
+        res.status === 504 || res.status === 502
+          ? 'The server timed out. Try fewer goals or shorter context.'
+          : `Empty response from server (HTTP ${res.status}).`
+      );
+    }
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error(`Server returned non-JSON (HTTP ${res.status}): ${raw.slice(0,200)}`);
+    }
+
+    if (!res.ok || data.error) {
+      throw new Error(data?.error?.message || `Request failed (HTTP ${res.status}).`);
+    }
 
     const text = (data.content || []).map(b => b.text || '').join('');
     const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error('No valid response received. Please try again.');
-    const peptides = JSON.parse(match[0]);
+    if (!match) throw new Error('No valid JSON array in model response. Please try again.');
+
+    let peptides;
+    try {
+      peptides = JSON.parse(match[0]);
+    } catch (e) {
+      throw new Error(`Could not parse model output: ${e.message}`);
+    }
 
     container.innerHTML = '';
     expandedCards.clear();
