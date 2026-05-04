@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peptide Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f7f7f4; font-family: 'DM Sans', system-ui, sans-serif; color: #0f172a; min-height: 100vh; }
+  textarea, button, input { font-family: inherit; }
+  ::selection { background: rgba(22,163,74,0.15); }
+
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.7} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  header {
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    padding: 18px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f7f7f4;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 8px rgba(22,163,74,0.35); }
+  .logo-text { font-size: 11px; letter-spacing: 0.15em; color: #64748b; text-transform: uppercase; font-weight: 500; }
+  .disclaimer-small { font-size: 11px; color: #64748b; }
+
+
+
+  .hero { padding: 72px 48px 48px; max-width: 780px; margin: 0 auto; }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(36px,5vw,56px); font-weight: 400; line-height: 1.1; margin-bottom: 14px; color: #0f172a; letter-spacing: -0.01em; }
+  .hero p { font-size: 15px; color: #475569; line-height: 1.75; max-width: 480px; }
+
+  .section { padding: 0 48px 52px; max-width: 780px; margin: 0 auto; }
+  .label { font-size: 10px; letter-spacing: 0.15em; color: #64748b; text-transform: uppercase; font-weight: 500; margin-bottom: 12px; }
+
+  .goals-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .goal-btn {
+    padding: 8px 16px; border-radius: 100px;
+    border: 1px solid rgba(0,0,0,0.1); background: #fff;
+    color: #64748b; font-size: 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .goal-btn:hover { border-color: rgba(0,0,0,0.2); color: #334155; }
+  .goal-btn.active { border-color: rgba(22,163,74,0.4); background: rgba(22,163,74,0.06); color: #16a34a; font-weight: 500; }
+
+  textarea {
+    width: 100%; background: #fff;
+    border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+    padding: 12px 16px; color: #0f172a; font-size: 13px;
+    resize: none; outline: none; line-height: 1.65;
+    margin-bottom: 24px; transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: rgba(0,0,0,0.18); }
+  textarea::placeholder { color: #94a3b8; }
+
+  .submit-btn {
+    padding: 12px 26px; border: none; border-radius: 10px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.01em;
+  }
+  .submit-btn.ready { background: #0f172a; color: #fff; }
+  .submit-btn.ready:hover { background: #1e293b; }
+  .submit-btn.disabled { background: rgba(0,0,0,0.05); color: #cbd5e1; cursor: not-allowed; }
+  .submit-btn.loading { background: rgba(0,0,0,0.05); color: #94a3b8; cursor: not-allowed; }
+
+  .results-header { font-size: 10px; letter-spacing: 0.15em; color: #64748b; text-transform: uppercase; font-weight: 500; margin-bottom: 16px; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .card {
+    background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 16px; overflow: hidden;
+    animation: fadeUp 0.4s ease both; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { border-color: rgba(0,0,0,0.12); box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
+
+  .card-header { padding: 24px 28px; cursor: pointer; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .card-meta { flex: 1; min-width: 0; }
+  .card-name-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
+  .card-name { font-size: 19px; font-weight: 500; color: #0f172a; }
+
+  .research-badge { font-size: 11px; padding: 3px 10px; border-radius: 100px; }
+  .badge-preclinical { background: rgba(148,163,184,0.12); color: #475569; }
+  .badge-anecdotal { background: rgba(217,119,6,0.08); color: #92400e; }
+  .badge-earlyclinical { background: rgba(22,163,74,0.08); color: #15803d; }
+
+  .card-full-name { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+  .card-tagline { font-size: 13px; color: #334155; line-height: 1.65; }
+
+  .score-block { text-align: right; flex-shrink: 0; }
+  .score-num { font-size: 38px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+  .score-label { font-size: 10px; color: #64748b; margin-top: 3px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .benefit-tags { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+  .benefit-tag { font-size: 12px; padding: 4px 10px; border-radius: 6px; background: #f7f7f4; color: #475569; border: 1px solid rgba(0,0,0,0.07); }
+
+  .card-details {
+    border-top: 1px solid rgba(0,0,0,0.06); padding: 24px 28px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px;
+    background: #fafaf8;
+  }
+  .detail-label { font-size: 10px; letter-spacing: 0.13em; color: #64748b; text-transform: uppercase; margin-bottom: 9px; font-weight: 500; }
+  .detail-text { font-size: 13px; color: #334155; line-height: 1.75; }
+  .side-effect-item { display: flex; gap: 8px; font-size: 13px; color: #334155; margin-bottom: 5px; align-items: flex-start; }
+  .side-effect-dash { color: #f97316; flex-shrink: 0; }
+  .stack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stack-tag { font-size: 12px; padding: 4px 10px; border-radius: 6px; background: rgba(22,163,74,0.07); color: #15803d; border: 1px solid rgba(22,163,74,0.15); }
+  .dosing-route { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+  .card-toggle { border-top: 1px solid rgba(0,0,0,0.05); padding: 10px 28px; display: flex; justify-content: flex-end; cursor: pointer; }
+  .toggle-text { font-size: 11px; color: #64748b; letter-spacing: 0.04em; }
+
+  .skeleton { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; height: 150px; animation: pulse 1.8s ease infinite; }
+
+  .legal { margin-top: 28px; font-size: 11px; color: #94a3b8; line-height: 1.85; padding-bottom: 60px; }
+  .error-msg { color: #f97316; font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="dot"></div>
+    <span class="logo-text">Peptide Advisor</span>
+  </div>
+  <span class="disclaimer-small">Research use only</span>
+</header>
+
+<div class="hero">
+  <h1>Find your protocol.</h1>
+  <p>Select your goals and get matched to research peptides with mechanism data, dosing guidance, and side effect profiles.</p>
+</div>
+
+<div class="section">
+  <div class="label">Select your goals</div>
+  <div class="goals-grid" id="goals-grid"></div>
+  <div class="label">Additional context</div>
+  <textarea id="context-input" rows="3" placeholder="e.g. recovering from a knee injury, gut sensitivity, currently cutting..."></textarea>
+  <button class="submit-btn disabled" id="submit-btn" onclick="getRecommendations()">Get recommendations →</button>
+</div>
+
+<div class="section" id="results-section" style="display:none">
+  <div class="results-header" id="results-header"></div>
+  <div class="cards" id="cards-container"></div>
+  <p class="legal">For educational and informational purposes only. Research peptides are not approved by the FDA for human use. Always consult a qualified healthcare provider before beginning any peptide protocol.</p>
+</div>
+
+<div class="section" id="error-section" style="display:none">
+  <p class="error-msg" id="error-msg"></p>
+</div>
+
+<script>
+const GOALS = [
+  "Fat Loss","Muscle Growth","Injury Recovery","Gut Health",
+  "Sleep Quality","Cognitive Performance","Anti-Aging","Libido",
+  "Anxiety / Stress","Inflammation","Skin & Collagen","Joint Health"
+];
+
+const SYSTEM = `You are a research peptide information database. Given health goals, return structured peptide recommendations.
+
+CRITICAL: Return ONLY a raw JSON array. No markdown, no backticks, no preamble. Start with [ and end with ].
+
+Return 4-5 peptides sorted by matchScore descending. Each object must have EXACTLY these fields:
+{
+  "name": "BPC-157",
+  "fullName": "Body Protection Compound 157",
+  "matchScore": 94,
+  "tagline": "One sentence primary use statement",
+  "mechanism": "2-3 sentences explaining mechanism of action",
+  "keyBenefits": ["benefit 1", "benefit 2", "benefit 3"],
+  "sideEffects": ["effect 1", "effect 2"],
+  "typicalDosing": "e.g. 250-500mcg daily",
+  "route": "e.g. Subcutaneous injection / Oral",
+  "researchLevel": "Preclinical",
+  "stacksWith": ["TB-500", "KPV"]
+}
+researchLevel must be one of exactly: "Preclinical", "Anecdotal", "Early Clinical"
+Be accurate. Include real side effects. Note research limitations honestly.`;
+
+let selected = new Set();
+let expandedCards = new Set();
+
+const grid = document.getElementById('goals-grid');
+GOALS.forEach(g => {
+  const btn = document.createElement('button');
+  btn.className = 'goal-btn';
+  btn.textContent = g;
+  btn.onclick = () => toggleGoal(g, btn);
+  grid.appendChild(btn);
+});
+
+function toggleGoal(g, btn) {
+  if (selected.has(g)) { selected.delete(g); btn.classList.remove('active'); }
+  else { selected.add(g); btn.classList.add('active'); }
+  updateBtn();
+}
+
+function updateBtn() {
+  const btn = document.getElementById('submit-btn');
+  btn.className = selected.size > 0 ? 'submit-btn ready' : 'submit-btn disabled';
+  btn.textContent = 'Get recommendations →';
+}
+
+function scoreColor(s) {
+  if (s >= 88) return '#16a34a';
+  if (s >= 72) return '#d97706';
+  return '#f97316';
+}
+
+function researchClass(l) {
+  if (l === 'Preclinical') return 'badge-preclinical';
+  if (l === 'Anecdotal') return 'badge-anecdotal';
+  if (l === 'Early Clinical') return 'badge-earlyclinical';
+  return 'badge-preclinical';
+}
+
+function buildCard(p, i) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = `${i * 0.07}s`;
+
+  const benefits = (p.keyBenefits || []).slice(0,3).map(b => `<span class="benefit-tag">${b}</span>`).join('');
+  const effects = (p.sideEffects || []).map(s => `<div class="side-effect-item"><span class="side-effect-dash">—</span>${s}</div>`).join('');
+  const stacks = (p.stacksWith || []).map(s => `<span class="stack-tag">${s}</span>`).join('');
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${i})">
+      <div class="card-top">
+        <div class="card-meta">
+          <div class="card-name-row">
+            <span class="card-name">${p.name}</span>
+            <span class="research-badge ${researchClass(p.researchLevel)}">${p.researchLevel}</span>
+          </div>
+          <div class="card-full-name">${p.fullName}</div>
+          <div class="card-tagline">${p.tagline}</div>
+        </div>
+        <div class="score-block">
+          <div class="score-num" style="color:${scoreColor(p.matchScore)}">${p.matchScore}</div>
+          <div class="score-label">match</div>
+        </div>
+      </div>
+      <div class="benefit-tags">${benefits}</div>
+    </div>
+    <div class="card-details" id="card-${i}-details" style="display:none">
+      <div>
+        <div class="detail-label">Mechanism</div>
+        <div class="detail-text">${p.mechanism}</div>
+      </div>
+      <div>
+        <div class="detail-label">Side Effects</div>
+        ${effects}
+      </div>
+      <div>
+        <div class="detail-label">Dosing</div>
+        <div class="detail-text">${p.typicalDosing}</div>
+        <div class="dosing-route">${p.route}</div>
+      </div>
+      <div>
+        <div class="detail-label">Stacks With</div>
+        <div class="stack-tags">${stacks}</div>
+      </div>
+    </div>
+    <div class="card-toggle" onclick="toggleCard(${i})">
+      <span class="toggle-text" id="card-${i}-toggle">View details ↓</span>
+    </div>`;
+  return card;
+}
+
+function toggleCard(i) {
+  const details = document.getElementById(`card-${i}-details`);
+  const label = document.getElementById(`card-${i}-toggle`);
+  if (expandedCards.has(i)) {
+    expandedCards.delete(i);
+    details.style.display = 'none';
+    label.textContent = 'View details ↓';
+  } else {
+    expandedCards.add(i);
+    details.style.display = 'grid';
+    label.textContent = 'Collapse ↑';
+  }
+}
+
+async function getRecommendations() {
+  if (!selected.size) return;
+
+  const btn = document.getElementById('submit-btn');
+  if (btn.classList.contains('loading')) return;
+  btn.className = 'submit-btn loading';
+  btn.textContent = 'Analyzing...';
+
+  document.getElementById('error-section').style.display = 'none';
+  const resultsSection = document.getElementById('results-section');
+  const container = document.getElementById('cards-container');
+  resultsSection.style.display = 'block';
+  container.innerHTML = `
+    <div class="skeleton"></div>
+    <div class="skeleton" style="animation-delay:.2s"></div>
+    <div class="skeleton" style="animation-delay:.4s"></div>`;
+
+  const ctx = document.getElementById('context-input').value.trim();
+  const msg = `My goals: ${[...selected].join(', ')}${ctx ? `\n\nAdditional context: ${ctx}` : ''}`;
+
+  try {
+    const res = await fetch('/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const text = (data.content || []).map(b => b.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const peptides = JSON.parse(clean);
+
+    container.innerHTML = '';
+    expandedCards.clear();
+    document.getElementById('results-header').textContent = `${peptides.length} peptides matched`;
+    peptides.forEach((p, i) => container.appendChild(buildCard(p, i)));
+
+  } catch(e) {
+    resultsSection.style.display = 'none';
+    document.getElementById('error-section').style.display = 'block';
+    document.getElementById('error-msg').textContent = `Error: ${e.message || 'Something went wrong. Please try again.'}`;
+  }
+
+  btn.className = selected.size ? 'submit-btn ready' : 'submit-btn disabled';
+  btn.textContent = 'Get recommendations →';
+}
+</script>
+</body>
+</html>
