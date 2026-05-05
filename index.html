@@ -348,8 +348,8 @@ async function getRecommendations() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5',
-        max_tokens: 1500,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
         system: SYSTEM,
         tools: [TOOL],
         tool_choice: { type: 'tool', name: 'return_peptide_recommendations' },
@@ -383,7 +383,14 @@ async function getRecommendations() {
     // and parsed it into a real object, so no JSON.parse needed.
     const toolUse = (data.content || []).find(b => b.type === 'tool_use');
     if (!toolUse || !toolUse.input || !Array.isArray(toolUse.input.peptides)) {
-      throw new Error('Model did not return structured peptide data. Please try again.');
+      // Diagnostic info so we can see what actually came back next time.
+      console.error('Unexpected API response:', data);
+      const blockTypes = (data.content || []).map(b => b.type).join(', ') || 'none';
+      const stopReason = data.stop_reason || 'unknown';
+      throw new Error(
+        `No tool_use block in response (stop_reason: ${stopReason}, blocks: ${blockTypes}). ` +
+        `Model: ${data.model || 'unknown'}.`
+      );
     }
     const peptides = toolUse.input.peptides;
 
