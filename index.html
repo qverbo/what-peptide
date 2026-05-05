@@ -113,8 +113,36 @@
 
   .card-toggle { border-top: 1px solid rgba(0,0,0,0.05); padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .toggle-text { font-size: 11px; color: #64748b; letter-spacing: 0.04em; }
-  .source-btn { display: inline-block; padding: 7px 16px; background: #0f172a; color: #fff; border-radius: 8px; font-size: 12px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
+  .source-btn { display: inline-block; padding: 7px 16px; background: #0f172a; color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; text-decoration: none; cursor: pointer; transition: background 0.15s; font-family: inherit; }
   .source-btn:hover { background: #1e293b; }
+
+  .source-wrapper { position: relative; display: inline-block; }
+  .source-dropdown {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    min-width: 220px;
+    overflow: hidden;
+    z-index: 5;
+    animation: fadeUp 0.15s ease both;
+  }
+  .source-wrapper.open .source-dropdown { display: block; }
+  .source-option {
+    display: block;
+    padding: 11px 14px;
+    font-size: 12px;
+    color: #334155;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: background 0.12s;
+  }
+  .source-option:last-child { border-bottom: none; }
+  .source-option:hover { background: #f7f7f4; color: #0f172a; }
 
   .skeleton { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; height: 150px; animation: pulse 1.8s ease infinite; }
 
@@ -386,6 +414,435 @@ const PEPTIDE_DB = {
     researchLevel: "Early Clinical",
     stacksWith: ["CJC-1295"],
     goals: ["Fat Loss"]
+  },
+  "HCG": {
+    fullName: "Human Chorionic Gonadotropin",
+    mechanism: "A glycoprotein hormone that mimics LH, stimulating Leydig cells to produce testosterone. Used to maintain testicular function during TRT and for fertility support.",
+    keyBenefits: ["Maintains testicular size", "Supports endogenous testosterone", "Fertility restoration"],
+    sideEffects: ["Acne", "Water retention", "Possible gynecomastia at high doses", "Receptor desensitization with overuse"],
+    typicalDosing: "250-500 IU, 2-3x weekly",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Gonadorelin", "Triptorelin"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "Sermorelin": {
+    fullName: "Sermorelin Acetate (GHRH 1-29)",
+    mechanism: "A synthetic peptide consisting of the first 29 amino acids of GHRH. Stimulates pituitary GH release in a natural pulsatile fashion. Shorter half-life than CJC-1295.",
+    keyBenefits: ["Pulsatile GH release", "Lean mass support", "Improved sleep quality"],
+    sideEffects: ["Injection site reactions", "Headache", "Flushing"],
+    typicalDosing: "200-500mcg before bed",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Ipamorelin", "GHRP-2"],
+    goals: ["Muscle Growth", "Anti-Aging", "Sleep Quality"]
+  },
+  "IGF-1 LR3": {
+    fullName: "Insulin-like Growth Factor-1 Long R3",
+    mechanism: "A modified IGF-1 with reduced binding to IGFBPs, giving it a longer half-life (~20-30 hours). Drives muscle hyperplasia and protein synthesis systemically.",
+    keyBenefits: ["Muscle hyperplasia (new fiber growth)", "Enhanced recovery", "Fat utilization"],
+    sideEffects: ["Hypoglycemia risk", "Theoretical organ growth", "Joint pain", "Possible cancer concern with chronic use"],
+    typicalDosing: "20-50mcg daily, often pre-workout",
+    route: "Subcutaneous injection (rotate sites)",
+    researchLevel: "Preclinical",
+    stacksWith: ["CJC-1295", "MK-677", "Follistatin-344"],
+    goals: ["Muscle Growth"]
+  },
+  "Melanotan II": {
+    fullName: "Melanotan II (MT-II)",
+    mechanism: "A non-selective melanocortin receptor agonist (MC1R/3R/4R/5R). Stimulates melanin production and acts centrally on libido pathways.",
+    keyBenefits: ["Skin tanning with reduced UV exposure", "Increased libido", "Mild appetite suppression"],
+    sideEffects: ["Nausea", "Facial flushing", "Darkening of moles", "Theoretical melanoma risk", "Spontaneous erections"],
+    typicalDosing: "250-500mcg daily during loading, then 1-2x weekly maintenance",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["PT-141"],
+    goals: ["Libido", "Skin & Collagen"]
+  },
+  "Glutathione": {
+    fullName: "Reduced Glutathione (GSH)",
+    mechanism: "The body's master antioxidant tripeptide (glutamate-cysteine-glycine). Quenches reactive oxygen species, supports phase II liver detoxification, and recycles other antioxidants.",
+    keyBenefits: ["Antioxidant defense", "Liver detoxification", "Skin brightening"],
+    sideEffects: ["Generally well-tolerated", "Possible nausea at high oral doses"],
+    typicalDosing: "200-600mg daily",
+    route: "Oral, IV, or subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["NAD+", "Vitamin C"],
+    goals: ["Anti-Aging", "Skin & Collagen", "Inflammation"]
+  },
+  "NAD+": {
+    fullName: "Nicotinamide Adenine Dinucleotide",
+    mechanism: "A coenzyme essential for cellular energy via the electron transport chain and a substrate for sirtuins, PARPs, and CD38 — all implicated in aging biology.",
+    keyBenefits: ["Cellular energy support", "Sirtuin activation", "Possible anti-aging effects"],
+    sideEffects: ["Flushing", "Nausea during IV infusion", "Cost"],
+    typicalDosing: "100-300mg subcutaneous, or IV infusions",
+    route: "Subcutaneous injection or IV",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Glutathione", "MOTS-c"],
+    goals: ["Anti-Aging", "Cognitive Performance"]
+  },
+  "Tesofensine": {
+    fullName: "Tesofensine",
+    mechanism: "A serotonin-norepinephrine-dopamine reuptake inhibitor originally developed for Alzheimer's. Reduces appetite via central monoamine modulation.",
+    keyBenefits: ["Significant appetite suppression", "Fat loss", "Cognitive lift"],
+    sideEffects: ["Insomnia", "Dry mouth", "Increased heart rate", "Blood pressure elevation"],
+    typicalDosing: "0.25-0.5mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["5-Amino-1MQ"],
+    goals: ["Fat Loss"]
+  },
+  "Oxytocin": {
+    fullName: "Oxytocin",
+    mechanism: "A 9-amino-acid peptide hormone involved in social bonding, trust, and stress modulation. Acts on oxytocin receptors centrally and peripherally.",
+    keyBenefits: ["Reduced social anxiety", "Improved bonding", "Mild libido enhancement"],
+    sideEffects: ["Generally well-tolerated short-term", "Possible emotional dysregulation", "Water retention"],
+    typicalDosing: "10-40 IU intranasal, 1-2x daily",
+    route: "Intranasal spray or sublingual",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Selank"],
+    goals: ["Anxiety / Stress", "Libido"]
+  },
+  "Gonadorelin": {
+    fullName: "Gonadorelin (synthetic GnRH)",
+    mechanism: "A synthetic decapeptide identical to natural GnRH. Stimulates pituitary release of LH and FSH in a pulsatile fashion.",
+    keyBenefits: ["Maintains HPTA function during TRT", "Fertility support", "Cleaner alternative to HCG"],
+    sideEffects: ["Injection site reactions", "Hot flashes", "Requires multiple daily doses"],
+    typicalDosing: "100-200mcg, 2-3x daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["HCG"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "GHRP-6": {
+    fullName: "Growth Hormone Releasing Peptide-6",
+    mechanism: "A ghrelin receptor agonist that strongly increases GH release. Notable for substantially increasing appetite via the ghrelin pathway.",
+    keyBenefits: ["Strong GH pulse", "Marked appetite increase (useful for bulking)", "Recovery"],
+    sideEffects: ["Pronounced hunger", "Water retention", "Slight cortisol/prolactin rise"],
+    typicalDosing: "100-200mcg, 1-3x daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["CJC-1295", "Sermorelin"],
+    goals: ["Muscle Growth"]
+  },
+  "GHRP-2": {
+    fullName: "Growth Hormone Releasing Peptide-2",
+    mechanism: "A ghrelin receptor agonist with strong GH-releasing effect. Less appetite stimulation than GHRP-6 but slightly more cortisol/prolactin elevation.",
+    keyBenefits: ["Strong GH pulse", "Lean mass support", "Recovery"],
+    sideEffects: ["Cortisol and prolactin elevation", "Slight water retention", "Head rush after injection"],
+    typicalDosing: "100-200mcg, 1-3x daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["CJC-1295", "Sermorelin"],
+    goals: ["Muscle Growth", "Anti-Aging"]
+  },
+  "Follistatin-344": {
+    fullName: "Follistatin-344",
+    mechanism: "A glycoprotein that binds and inhibits myostatin and activin, removing key negative regulators of muscle growth.",
+    keyBenefits: ["Significant muscle hypertrophy potential", "Reduced muscle wasting"],
+    sideEffects: ["Limited human safety data", "Possible long-term effects on cardiac/other muscle"],
+    typicalDosing: "100mcg daily for 10-day cycles",
+    route: "Subcutaneous or intramuscular injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["IGF-1 LR3", "ACE-031"],
+    goals: ["Muscle Growth"]
+  },
+  "Kisspeptin-10": {
+    fullName: "Kisspeptin-10",
+    mechanism: "A 10-amino-acid fragment of the kisspeptin peptide family. Acts upstream of GnRH neurons, regulating reproductive hormone signaling.",
+    keyBenefits: ["Stimulates LH/FSH release", "Libido enhancement", "Fertility support"],
+    sideEffects: ["Mild headache", "Generally well-tolerated short-term"],
+    typicalDosing: "50-200mcg, varies by protocol",
+    route: "Subcutaneous injection or intranasal",
+    researchLevel: "Early Clinical",
+    stacksWith: ["PT-141", "Gonadorelin"],
+    goals: ["Libido"]
+  },
+  "PEG MGF": {
+    fullName: "PEGylated Mechano Growth Factor",
+    mechanism: "A polyethylene-glycolated splice variant of IGF-1 expressed in muscle following damage. PEGylation extends half-life, allowing systemic action.",
+    keyBenefits: ["Satellite cell activation", "Muscle repair", "Hypertrophy support"],
+    sideEffects: ["Limited human data", "Theoretical organ growth effects"],
+    typicalDosing: "200-400mcg, 1-3x weekly post-workout",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["IGF-1 LR3", "CJC-1295"],
+    goals: ["Muscle Growth", "Injury Recovery"]
+  },
+  "LL-37": {
+    fullName: "LL-37 / CAP-18 (Cathelicidin)",
+    mechanism: "An endogenous cationic antimicrobial peptide. Disrupts bacterial membranes and modulates innate immunity. Investigated for chronic infections and biofilm conditions.",
+    keyBenefits: ["Broad antimicrobial activity", "Anti-biofilm", "Immune modulation"],
+    sideEffects: ["Injection site reactions", "Possible flu-like symptoms during die-off"],
+    typicalDosing: "100-500mcg daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["KPV", "Thymosin Alpha-1"],
+    goals: ["Inflammation", "Gut Health"]
+  },
+  "ARA-290": {
+    fullName: "Cibinitide (ARA-290)",
+    mechanism: "An 11-amino-acid peptide derived from erythropoietin's helix-B. Targets the innate repair receptor without erythropoietic side effects.",
+    keyBenefits: ["Neuropathic pain reduction", "Anti-inflammatory", "Tissue repair"],
+    sideEffects: ["Generally well-tolerated", "Limited long-term human data"],
+    typicalDosing: "1-4mg daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["BPC-157"],
+    goals: ["Inflammation", "Injury Recovery"]
+  },
+  "Triptorelin": {
+    fullName: "Triptorelin (long-acting GnRH agonist)",
+    mechanism: "A long-acting GnRH agonist. A single high dose causes an initial flare of LH/FSH, often used to restart the HPTA after suppression.",
+    keyBenefits: ["HPTA reset post-cycle", "Single-dose protocol", "Fertility restoration"],
+    sideEffects: ["Initial testosterone surge", "Hot flashes", "Mood changes"],
+    typicalDosing: "100-200mcg single dose for HPTA restart",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["HCG"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "SLU-PP-332": {
+    fullName: "SLU-PP-332",
+    mechanism: "An ERR (estrogen-related receptor) agonist that mimics exercise-like metabolic adaptations. Increases mitochondrial biogenesis and fat oxidation in animal models.",
+    keyBenefits: ["Exercise mimetic", "Fat oxidation", "Metabolic flexibility"],
+    sideEffects: ["No human safety data", "Long-term effects unknown"],
+    typicalDosing: "Investigational, ~50mg daily in preclinical",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["5-Amino-1MQ"],
+    goals: ["Fat Loss"]
+  },
+  "BAM-15": {
+    fullName: "BAM-15",
+    mechanism: "A mitochondrial uncoupler that dissipates the proton gradient, increasing energy expenditure without affecting plasma membrane potential.",
+    keyBenefits: ["Increased energy expenditure", "Fat loss without appetite suppression"],
+    sideEffects: ["No human safety data", "Hyperthermia risk with overdose"],
+    typicalDosing: "Investigational, 50-100mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["5-Amino-1MQ"],
+    goals: ["Fat Loss"]
+  },
+  "L-Carnitine": {
+    fullName: "L-Carnitine (and acetyl/tartrate forms)",
+    mechanism: "A naturally occurring amino acid derivative that transports long-chain fatty acids into mitochondria for beta-oxidation.",
+    keyBenefits: ["Fat oxidation support", "Exercise recovery", "Cognitive boost (acetyl form)"],
+    sideEffects: ["Fishy body odor at high doses", "Possible TMAO elevation"],
+    typicalDosing: "1-3g daily oral, or 200-500mg injection",
+    route: "Oral or intramuscular injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["AOD-9604"],
+    goals: ["Fat Loss", "Cognitive Performance"]
+  },
+  "IGF-1 DES": {
+    fullName: "IGF-1 DES (1-3)",
+    mechanism: "A truncated IGF-1 analog that retains potent receptor binding but with shorter half-life. Used for localized muscle growth via site injection.",
+    keyBenefits: ["Localized hyperplasia", "Fast-acting", "Less systemic exposure"],
+    sideEffects: ["Hypoglycemia at high doses", "Theoretical organ growth", "Short window of action"],
+    typicalDosing: "50-150mcg, intramuscular at target sites",
+    route: "Intramuscular injection (site-specific)",
+    researchLevel: "Preclinical",
+    stacksWith: ["CJC-1295"],
+    goals: ["Muscle Growth"]
+  },
+  "HMG": {
+    fullName: "Human Menopausal Gonadotropin",
+    mechanism: "A purified urine-derived gonadotropin containing both LH and FSH activity. Stimulates ovarian or testicular function.",
+    keyBenefits: ["Fertility support", "Complete gonadotropin replacement"],
+    sideEffects: ["Injection site reactions", "Possible mood changes", "Ovarian/testicular stimulation effects"],
+    typicalDosing: "75 IU 2-3x weekly",
+    route: "Subcutaneous or intramuscular injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["HCG"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "Orforglipron": {
+    fullName: "Orforglipron",
+    mechanism: "An oral non-peptide GLP-1 receptor agonist. Phase 3 trials show comparable weight loss to injectable GLP-1s with the convenience of a daily pill.",
+    keyBenefits: ["Effective fat loss", "Oral dosing (no needles)", "Glycemic control"],
+    sideEffects: ["Nausea", "GI distress", "Possible pancreatitis (class effect)"],
+    typicalDosing: "Trial doses up to 36mg daily, titrated",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Tesamorelin"],
+    goals: ["Fat Loss"]
+  },
+  "MGF": {
+    fullName: "Mechano Growth Factor (IGF-1Ec)",
+    mechanism: "A splice variant of IGF-1 expressed locally in muscle in response to mechanical loading. Activates satellite cells and drives muscle repair.",
+    keyBenefits: ["Satellite cell activation", "Post-workout muscle repair"],
+    sideEffects: ["Very short half-life (limits practical use)", "Site-specific only"],
+    typicalDosing: "200-400mcg post-workout, intramuscular at target site",
+    route: "Intramuscular injection (site-specific)",
+    researchLevel: "Preclinical",
+    stacksWith: ["PEG MGF"],
+    goals: ["Muscle Growth", "Injury Recovery"]
+  },
+  "OS-01": {
+    fullName: "OS-01 Skin Peptide",
+    mechanism: "A synthetic peptide developed at Stanford targeting senescent cells in skin. Reduces senescence-associated secretory phenotype (SASP) markers.",
+    keyBenefits: ["Senescent cell modulation", "Improved skin appearance", "Cellular aging support"],
+    sideEffects: ["Generally well-tolerated topically", "Oral data limited"],
+    typicalDosing: "100mg daily (oral) or topical formulation",
+    route: "Oral or topical",
+    researchLevel: "Preclinical",
+    stacksWith: ["GHK-Cu"],
+    goals: ["Skin & Collagen", "Anti-Aging"]
+  },
+  "P21": {
+    fullName: "Cerebrolysin-derived Peptide P21",
+    mechanism: "A neurogenic peptide derived from CNTF. Promotes hippocampal neurogenesis and BDNF expression in animal models.",
+    keyBenefits: ["Neurogenesis", "Cognitive support", "Neuroprotective potential"],
+    sideEffects: ["Limited human data", "Mild headache reported"],
+    typicalDosing: "1-5mg daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["Semax"],
+    goals: ["Cognitive Performance"]
+  },
+  "RAD-140": {
+    fullName: "RAD-140 (Testolone)",
+    mechanism: "A selective androgen receptor modulator (SARM) with high affinity for AR in muscle and bone. Anabolic effects similar to testosterone with reduced androgenic activity.",
+    keyBenefits: ["Significant lean mass gains", "Strength", "Neuroprotective potential"],
+    sideEffects: ["Testosterone suppression", "Possible liver effects", "Hair loss in predisposed users"],
+    typicalDosing: "10-20mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["MK-677"],
+    goals: ["Muscle Growth"]
+  },
+  "GW-501516": {
+    fullName: "GW-501516 (Cardarine)",
+    mechanism: "A PPAR-delta agonist that increases fatty acid oxidation and endurance through metabolic reprogramming.",
+    keyBenefits: ["Endurance enhancement", "Fat oxidation", "Lipid profile improvement"],
+    sideEffects: ["Cancer signal in long-duration high-dose rodent studies (notable concern)"],
+    typicalDosing: "10-20mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["SR-9011"],
+    goals: ["Fat Loss"]
+  },
+  "S-4": {
+    fullName: "S-4 (Andarine)",
+    mechanism: "A SARM with selective AR activity in muscle and bone. Notable for vision-related side effects from binding ocular androgen receptors.",
+    keyBenefits: ["Lean mass support", "Fat loss", "Bone density"],
+    sideEffects: ["Yellow tint to vision", "Night vision impairment (typically reversible)", "HPTA suppression"],
+    typicalDosing: "25-50mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["MK-677"],
+    goals: ["Muscle Growth", "Fat Loss"]
+  },
+  "YK-11": {
+    fullName: "YK-11",
+    mechanism: "A myostatin inhibitor structurally similar to DHT. May increase follistatin expression to suppress myostatin, though precise mechanism remains debated.",
+    keyBenefits: ["Significant muscle growth", "Strength"],
+    sideEffects: ["Joint pain", "Hair loss", "Testosterone suppression", "Liver stress"],
+    typicalDosing: "5-10mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["Follistatin-344"],
+    goals: ["Muscle Growth"]
+  },
+  "AC-262": {
+    fullName: "AC-262 (Accadrine)",
+    mechanism: "A non-steroidal SARM with milder effects than typical SARMs. Originally developed for BPH and cognitive applications.",
+    keyBenefits: ["Mild lean mass support", "Possible cognitive benefits", "Low suppression"],
+    sideEffects: ["Less androgenic suppression than RAD-140", "Limited human data"],
+    typicalDosing: "10-20mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["MK-677"],
+    goals: ["Cognitive Performance", "Muscle Growth"]
+  },
+  "RAD-150": {
+    fullName: "RAD-150 (TLB-150)",
+    mechanism: "An ester analog of RAD-140 with improved oral bioavailability and a smoother kinetic profile.",
+    keyBenefits: ["Lean mass and strength similar to RAD-140", "Smoother release"],
+    sideEffects: ["Testosterone suppression", "Lipid changes", "Limited human data"],
+    typicalDosing: "10mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["MK-677"],
+    goals: ["Muscle Growth"]
+  },
+  "S-23": {
+    fullName: "S-23",
+    mechanism: "A potent SARM with the highest binding affinity of common SARMs. Causes near-complete HPTA suppression at typical doses; also studied as a male contraceptive.",
+    keyBenefits: ["Strong lean mass gains", "Fat loss", "Hardening effect"],
+    sideEffects: ["Severe HPTA suppression", "Aggression", "Possible male infertility"],
+    typicalDosing: "10-30mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["MK-677"],
+    goals: ["Muscle Growth", "Fat Loss"]
+  },
+  "SR-9011": {
+    fullName: "SR-9011",
+    mechanism: "A REV-ERB agonist that modulates circadian-rhythm genes, mitochondrial biogenesis, and metabolism.",
+    keyBenefits: ["Endurance", "Fat loss", "Metabolic effects"],
+    sideEffects: ["Limited human data", "May disrupt circadian timing"],
+    typicalDosing: "10-20mg, 2x daily (short half-life)",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["GW-501516"],
+    goals: ["Fat Loss"]
+  },
+  "Trevogrumab": {
+    fullName: "Trevogrumab",
+    mechanism: "A humanized monoclonal antibody targeting myostatin. Blocks myostatin signaling to release the brake on muscle growth.",
+    keyBenefits: ["Significant muscle growth potential", "Anti-sarcopenia"],
+    sideEffects: ["Limited human data", "Possible cardiac effects with chronic myostatin blockade"],
+    typicalDosing: "Investigational",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["Follistatin-344"],
+    goals: ["Muscle Growth"]
+  },
+  "ACE-031": {
+    fullName: "ACE-031",
+    mechanism: "A soluble form of activin receptor type IIB. Binds activin and myostatin, preventing them from inhibiting muscle growth.",
+    keyBenefits: ["Significant muscle hypertrophy", "Anti-sarcopenia"],
+    sideEffects: ["Capillary leak observed in trials (cause for clinical halt)", "Nosebleeds"],
+    typicalDosing: "Investigational",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["Follistatin-344"],
+    goals: ["Muscle Growth"]
+  },
+  "FTPP": {
+    fullName: "FTPP (Adipotide)",
+    mechanism: "A pro-apoptotic peptide that targets prohibitin in adipose vasculature, causing adipocyte death by depriving them of blood supply.",
+    keyBenefits: ["Targeted fat loss in animal models"],
+    sideEffects: ["Renal toxicity", "Dehydration", "Limited human safety data"],
+    typicalDosing: "Investigational",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["5-Amino-1MQ"],
+    goals: ["Fat Loss"]
+  },
+  "Myostatin Inhibitor": {
+    fullName: "Myostatin Inhibitor (research compound)",
+    mechanism: "Binds and inhibits myostatin, removing the natural negative regulator of muscle growth. Various peptides and antibodies are in this class.",
+    keyBenefits: ["Increased muscle mass", "Reduced muscle wasting"],
+    sideEffects: ["Limited human safety data", "Possible cardiac muscle effects"],
+    typicalDosing: "Varies by specific compound",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["Follistatin-344"],
+    goals: ["Muscle Growth"]
+  },
+  "BPC-157 + TB-500 Blend": {
+    fullName: "BPC-157 + TB-500 Combined Blend",
+    mechanism: "Combines BPC-157's local tissue repair effects with TB-500's systemic angiogenesis and cell migration. Often used together for synergistic injury recovery.",
+    keyBenefits: ["Synergistic tissue repair", "Faster injury recovery", "Anti-inflammatory"],
+    sideEffects: ["Combined side-effect profile of both peptides", "Mild fatigue"],
+    typicalDosing: "250-500mcg of each, daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["GHK-Cu"],
+    goals: ["Injury Recovery", "Joint Health", "Inflammation"]
   }
 };
 // ─────────────────────────────────────────────────────────────────
@@ -430,22 +887,85 @@ const TOOL = {
 };
 
 // ── AFFILIATE LINKS ──────────────────────────────────────────────
+// Each peptide can have multiple sourcing options (e.g. injectable + oral).
+// If only one option exists, the button links straight to it.
+// If multiple, clicking the button opens a dropdown to choose.
+// Replace YOUR-AFFILIATE-LINK.com with your real affiliate URLs.
 const AFFILIATE_LINKS = {
-  "BPC-157":          "https://YOUR-AFFILIATE-LINK.com/bpc-157",
-  "TB-500":           "https://YOUR-AFFILIATE-LINK.com/tb-500",
-  "Ipamorelin":       "https://YOUR-AFFILIATE-LINK.com/ipamorelin",
-  "CJC-1295":         "https://YOUR-AFFILIATE-LINK.com/cjc-1295",
-  "KPV":              "https://YOUR-AFFILIATE-LINK.com/kpv",
-  "GHK-Cu":           "https://YOUR-AFFILIATE-LINK.com/ghk-cu",
-  "Semax":            "https://YOUR-AFFILIATE-LINK.com/semax",
-  "Selank":           "https://YOUR-AFFILIATE-LINK.com/selank",
-  "Epithalon":        "https://YOUR-AFFILIATE-LINK.com/epithalon",
-  "Retatrutide":      "https://YOUR-AFFILIATE-LINK.com/retatrutide",
-  "Bromantane":       "https://YOUR-AFFILIATE-LINK.com/bromantane",
-  "DSIP":             "https://YOUR-AFFILIATE-LINK.com/dsip",
-  "PT-141":           "https://YOUR-AFFILIATE-LINK.com/pt-141",
-  "Hexarelin":        "https://YOUR-AFFILIATE-LINK.com/hexarelin",
-  "5-Amino-1MQ":      "https://YOUR-AFFILIATE-LINK.com/5-amino-1mq",
+  "BPC-157": [
+    { label: "Injectable (5mg vial)",   url: "https://YOUR-AFFILIATE-LINK.com/bpc-157-vial" },
+    { label: "Oral (60 capsules)",      url: "https://YOUR-AFFILIATE-LINK.com/bpc-157-caps" }
+  ],
+  "TB-500": [
+    { label: "Injectable (5mg vial)",   url: "https://YOUR-AFFILIATE-LINK.com/tb-500-vial" },
+    { label: "Oral (60 capsules)",      url: "https://YOUR-AFFILIATE-LINK.com/tb-500-caps" }
+  ],
+  "Ipamorelin":     [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ipamorelin" }],
+  "CJC-1295":       [
+    { label: "With DAC (2mg vial)",     url: "https://YOUR-AFFILIATE-LINK.com/cjc-1295-dac" },
+    { label: "Without DAC (2mg vial)",  url: "https://YOUR-AFFILIATE-LINK.com/cjc-1295-no-dac" }
+  ],
+  "KPV":            [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/kpv" }],
+  "GHK-Cu":         [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ghk-cu" }],
+  "Semax":          [{ label: "Injectable (30mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/semax" }],
+  "Selank":         [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/selank" }],
+  "Epithalon":      [{ label: "Oral (10mg capsules)", url: "https://YOUR-AFFILIATE-LINK.com/epithalon" }],
+  "Retatrutide":    [{ label: "Injectable", url: "https://YOUR-AFFILIATE-LINK.com/retatrutide" }],
+  "Bromantane":     [{ label: "Oral", url: "https://YOUR-AFFILIATE-LINK.com/bromantane" }],
+  "DSIP":           [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/dsip" }],
+  "PT-141":         [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/pt-141" }],
+  "Hexarelin":      [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/hexarelin" }],
+  "5-Amino-1MQ":    [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/5-amino-1mq" }],
+  "Tesamorelin":    [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/tesamorelin" }],
+  "MK-677":         [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/mk-677" }],
+  "Thymosin Alpha-1": [{ label: "Injectable", url: "https://YOUR-AFFILIATE-LINK.com/thymosin-alpha-1" }],
+  "MOTS-c":         [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/mots-c" }],
+  "AOD-9604":       [{ label: "Injectable", url: "https://YOUR-AFFILIATE-LINK.com/aod-9604" }],
+
+  // New additions
+  "HCG":            [{ label: "Injectable (5000 IU)", url: "https://YOUR-AFFILIATE-LINK.com/hcg" }],
+  "Sermorelin":     [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/sermorelin" }],
+  "IGF-1 LR3":      [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/igf-1-lr3" }],
+  "Melanotan II":   [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/melanotan-2" }],
+  "Glutathione":    [{ label: "Oral (600mg capsules)", url: "https://YOUR-AFFILIATE-LINK.com/glutathione" }],
+  "NAD+":           [{ label: "Injectable (100mg)", url: "https://YOUR-AFFILIATE-LINK.com/nad" }],
+  "Tesofensine":    [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/tesofensine" }],
+  "Oxytocin":       [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/oxytocin" }],
+  "Gonadorelin":    [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/gonadorelin" }],
+  "GHRP-6":         [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ghrp-6" }],
+  "GHRP-2":         [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ghrp-2" }],
+  "Follistatin-344":[{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/follistatin-344" }],
+  "Kisspeptin-10":  [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/kisspeptin-10" }],
+  "PEG MGF":        [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/peg-mgf" }],
+  "LL-37":          [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ll-37" }],
+  "ARA-290":        [{ label: "Injectable (16mg KIT)", url: "https://YOUR-AFFILIATE-LINK.com/ara-290" }],
+  "Triptorelin":    [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/triptorelin" }],
+  "SLU-PP-332":     [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/slu-pp-332" }],
+  "BAM-15":         [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/bam-15" }],
+  "L-Carnitine":    [{ label: "Injectable (8 ampoules)", url: "https://YOUR-AFFILIATE-LINK.com/l-carnitine" }],
+  "IGF-1 DES":      [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/igf-1-des" }],
+  "HMG":            [{ label: "Injectable (75 IU)", url: "https://YOUR-AFFILIATE-LINK.com/hmg" }],
+  "Orforglipron":   [{ label: "Oral (90 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/orforglipron" }],
+  "MGF":            [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/mgf" }],
+  "OS-01":          [{ label: "Oral (30 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/os-01" }],
+  "P21":            [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/p21" }],
+
+  // SARMs / research compounds
+  "RAD-140":        [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/rad-140" }],
+  "GW-501516":      [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/gw-501516" }],
+  "S-4":            [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/s4-andarine" }],
+  "YK-11":          [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/yk-11" }],
+  "AC-262":         [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/ac-262" }],
+  "RAD-150":        [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/rad-150" }],
+  "S-23":           [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/s-23" }],
+  "SR-9011":        [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/sr-9011" }],
+  "Trevogrumab":    [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/trevogrumab" }],
+  "ACE-031":        [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ace-031" }],
+  "FTPP":           [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/ftpp-adipotide" }],
+  "Myostatin Inhibitor": [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/myostatin" }],
+
+  // Blends
+  "BPC-157 + TB-500 Blend": [{ label: "Injectable (blend vial)", url: "https://YOUR-AFFILIATE-LINK.com/bpc-tb-blend" }]
 };
 // ─────────────────────────────────────────────────────────────────
 
@@ -494,10 +1014,22 @@ function buildCard(p, i) {
   const benefits = (p.keyBenefits || []).slice(0,3).map(b => `<span class="benefit-tag">${b}</span>`).join('');
   const effects = (p.sideEffects || []).map(s => `<div class="side-effect-item"><span class="side-effect-dash">—</span>${s}</div>`).join('');
   const stacks = (p.stacksWith || []).map(s => `<span class="stack-tag">${s}</span>`).join('');
-  const affiliateUrl = AFFILIATE_LINKS[p.name];
-  const sourceBtn = affiliateUrl
-    ? `<a class="source-btn" href="${affiliateUrl}" target="_blank" rel="noopener">Where to source →</a>`
-    : '';
+
+  // Build the source button: direct link if one option, dropdown if multiple.
+  const sources = AFFILIATE_LINKS[p.name];
+  let sourceBtn = '';
+  if (sources && sources.length === 1) {
+    sourceBtn = `<a class="source-btn" href="${sources[0].url}" target="_blank" rel="noopener">Where to source →</a>`;
+  } else if (sources && sources.length > 1) {
+    const options = sources.map(s =>
+      `<a class="source-option" href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`
+    ).join('');
+    sourceBtn = `
+      <div class="source-wrapper" id="source-${i}">
+        <button class="source-btn" onclick="toggleSourceDropdown(${i}, event)">Where to source ▾</button>
+        <div class="source-dropdown">${options}</div>
+      </div>`;
+  }
 
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(${i})">
@@ -556,6 +1088,20 @@ function toggleCard(i) {
     label.textContent = 'Collapse ↑';
   }
 }
+
+// Source-link dropdown: toggle open/closed for the clicked card,
+// close any others, and close on outside-click.
+function toggleSourceDropdown(i, event) {
+  event.stopPropagation();
+  const wrapper = document.getElementById(`source-${i}`);
+  document.querySelectorAll('.source-wrapper.open').forEach(el => {
+    if (el !== wrapper) el.classList.remove('open');
+  });
+  wrapper.classList.toggle('open');
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.source-wrapper.open').forEach(el => el.classList.remove('open'));
+});
 
 async function getRecommendations() {
   if (!selected.size) return;
