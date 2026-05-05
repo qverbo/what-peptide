@@ -159,39 +159,270 @@ const GOALS = [
   "Anxiety / Stress","Inflammation","Skin & Collagen","Joint Health"
 ];
 
-const SYSTEM = `You are a research peptide information database. Given a user's health goals, call the return_peptide_recommendations tool with 4-5 peptides sorted by matchScore descending. Be accurate, include real side effects, and note research limitations honestly.`;
+// ── PEPTIDE DATABASE ───────────────────────────────────────────────
+// All static peptide data lives here. The LLM only picks/ranks these
+// names and writes a personalized tagline — keeping its output tiny
+// and the round-trip fast (~1-2s with Haiku 4.5).
+const PEPTIDE_DB = {
+  "BPC-157": {
+    fullName: "Body Protection Compound 157",
+    mechanism: "A 15-amino-acid peptide derived from human gastric juice. Promotes angiogenesis, modulates nitric oxide signaling, and accelerates tendon, ligament, and gut tissue healing in animal studies.",
+    keyBenefits: ["Tendon and ligament healing", "Gut lining repair", "Reduced inflammation"],
+    sideEffects: ["Mild injection site reactions", "Limited human safety data", "Possible fatigue"],
+    typicalDosing: "250-500mcg daily",
+    route: "Subcutaneous injection (oral has poor bioavailability)",
+    researchLevel: "Preclinical",
+    stacksWith: ["TB-500", "KPV", "GHK-Cu"],
+    goals: ["Injury Recovery", "Gut Health", "Joint Health", "Inflammation"]
+  },
+  "TB-500": {
+    fullName: "Thymosin Beta-4 fragment",
+    mechanism: "Synthetic fragment of Thymosin Beta-4. Promotes actin sequestration, cell migration, and angiogenesis, supporting soft-tissue and muscle repair.",
+    keyBenefits: ["Soft tissue repair", "Reduced inflammation", "Improved flexibility"],
+    sideEffects: ["Lethargy after dosing", "Limited human data", "Theoretical risk in cancer patients"],
+    typicalDosing: "2-2.5mg twice weekly",
+    route: "Subcutaneous or intramuscular injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["BPC-157", "GHK-Cu"],
+    goals: ["Injury Recovery", "Joint Health", "Inflammation"]
+  },
+  "Ipamorelin": {
+    fullName: "Ipamorelin",
+    mechanism: "A selective ghrelin-receptor agonist that stimulates pulsatile growth-hormone release from the pituitary without significantly raising cortisol or prolactin.",
+    keyBenefits: ["Increased GH pulse", "Lean muscle support", "Improved sleep quality"],
+    sideEffects: ["Head rush after injection", "Water retention", "Tingling in extremities"],
+    typicalDosing: "200-300mcg, 1-3x daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["CJC-1295", "MK-677"],
+    goals: ["Muscle Growth", "Sleep Quality", "Anti-Aging"]
+  },
+  "CJC-1295": {
+    fullName: "CJC-1295 (with or without DAC)",
+    mechanism: "A long-acting GHRH analog that increases the amplitude of GH pulses. Often paired with a ghrelin agonist like Ipamorelin for synergistic GH release.",
+    keyBenefits: ["Sustained GH elevation", "Body composition support", "Recovery"],
+    sideEffects: ["Injection site redness", "Water retention", "Numbness or tingling"],
+    typicalDosing: "100-200mcg daily (no DAC) or 1-2mg weekly (with DAC)",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Ipamorelin", "Hexarelin"],
+    goals: ["Muscle Growth", "Anti-Aging", "Fat Loss"]
+  },
+  "KPV": {
+    fullName: "Lysine-Proline-Valine tripeptide",
+    mechanism: "C-terminal fragment of alpha-MSH. Acts on melanocortin receptors and downregulates pro-inflammatory cytokine signaling, particularly in the gut.",
+    keyBenefits: ["Reduced gut inflammation", "Skin inflammation support", "Antimicrobial activity"],
+    sideEffects: ["Generally well-tolerated", "Limited long-term human data"],
+    typicalDosing: "200-500mcg daily",
+    route: "Oral (gut), subcutaneous, or topical depending on target",
+    researchLevel: "Preclinical",
+    stacksWith: ["BPC-157", "LL-37"],
+    goals: ["Gut Health", "Inflammation", "Skin & Collagen"]
+  },
+  "GHK-Cu": {
+    fullName: "Copper Tripeptide-1",
+    mechanism: "A copper-binding tripeptide naturally present in plasma that declines with age. Stimulates collagen synthesis, antioxidant enzymes, and wound-healing pathways.",
+    keyBenefits: ["Collagen and elastin production", "Wound healing", "Hair follicle stimulation"],
+    sideEffects: ["Skin irritation if topical", "Risk of copper accumulation with high IV doses"],
+    typicalDosing: "1-3mg daily (injection); topical 1-3% creams",
+    route: "Subcutaneous injection or topical",
+    researchLevel: "Early Clinical",
+    stacksWith: ["BPC-157", "TB-500"],
+    goals: ["Skin & Collagen", "Anti-Aging", "Joint Health", "Injury Recovery"]
+  },
+  "Semax": {
+    fullName: "Semax (ACTH 4-10 analog)",
+    mechanism: "A heptapeptide analog of ACTH(4-10). Increases BDNF and NGF expression, modulates dopaminergic and serotonergic activity, and shows neuroprotective effects.",
+    keyBenefits: ["Improved focus", "Neuroprotection", "Faster post-stroke recovery (clinical use in Russia)"],
+    sideEffects: ["Mild headache", "Irritability at high doses", "Limited Western clinical data"],
+    typicalDosing: "300-600mcg daily, intranasal",
+    route: "Intranasal spray",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Selank", "Bromantane"],
+    goals: ["Cognitive Performance", "Anxiety / Stress"]
+  },
+  "Selank": {
+    fullName: "Selank (Tuftsin analog)",
+    mechanism: "A synthetic analog of the immunomodulatory peptide Tuftsin. Modulates GABA, serotonin, and BDNF expression, producing anxiolytic effects without sedation.",
+    keyBenefits: ["Reduced anxiety", "Improved memory", "No sedation or dependence"],
+    sideEffects: ["Generally well-tolerated", "Mild fatigue in some users"],
+    typicalDosing: "250-500mcg daily, intranasal",
+    route: "Intranasal spray",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Semax"],
+    goals: ["Anxiety / Stress", "Cognitive Performance"]
+  },
+  "Epithalon": {
+    fullName: "Epitalon (Epithalon)",
+    mechanism: "A tetrapeptide originally isolated from the pineal gland. Reported to upregulate telomerase activity and normalize melatonin rhythms in animal and small human studies.",
+    keyBenefits: ["Improved sleep architecture", "Possible telomere maintenance", "Circadian regulation"],
+    sideEffects: ["Limited safety data", "Vivid dreams reported", "Theoretical risk with malignancy"],
+    typicalDosing: "5-10mg daily for 10-20 day cycles",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["DSIP", "MK-677"],
+    goals: ["Anti-Aging", "Sleep Quality"]
+  },
+  "Retatrutide": {
+    fullName: "Retatrutide (LY3437943)",
+    mechanism: "A triple agonist of GLP-1, GIP, and glucagon receptors. In Phase 2 trials produced ~24% mean body-weight reduction at 48 weeks.",
+    keyBenefits: ["Substantial fat loss", "Improved glycemic control", "Appetite suppression"],
+    sideEffects: ["Nausea and vomiting", "GI distress", "Possible pancreatitis (class effect)"],
+    typicalDosing: "Trial doses 1-12mg weekly (titrated)",
+    route: "Subcutaneous injection, weekly",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Tesamorelin"],
+    goals: ["Fat Loss"]
+  },
+  "Bromantane": {
+    fullName: "Bromantane (Ladasten)",
+    mechanism: "An adamantane derivative with mild dopaminergic and anxiolytic effects. Marketed in Russia for asthenia; increases tyrosine hydroxylase expression.",
+    keyBenefits: ["Reduced fatigue", "Mild stimulant effect without jitter", "Stress resilience"],
+    sideEffects: ["Mild insomnia if dosed late", "Limited Western safety data"],
+    typicalDosing: "50-100mg daily, oral",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Semax", "Selank"],
+    goals: ["Cognitive Performance", "Anxiety / Stress", "Anti-Aging"]
+  },
+  "DSIP": {
+    fullName: "Delta Sleep-Inducing Peptide",
+    mechanism: "A nonapeptide first isolated from the cerebral venous blood of sleeping rabbits. Modulates corticotropin and may improve slow-wave sleep, though human data is mixed.",
+    keyBenefits: ["Improved sleep onset", "Possible stress modulation", "Mild analgesic effect"],
+    sideEffects: ["Inconsistent effects between users", "Limited clinical data"],
+    typicalDosing: "100-200mcg before bed",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["Epithalon"],
+    goals: ["Sleep Quality", "Anxiety / Stress"]
+  },
+  "PT-141": {
+    fullName: "Bremelanotide (PT-141)",
+    mechanism: "A melanocortin-receptor agonist (MC3R/MC4R) that acts centrally to increase sexual desire. FDA-approved as Vyleesi for HSDD in premenopausal women.",
+    keyBenefits: ["Increased libido in both sexes", "Onset within 30-60 minutes", "Works centrally, not vascularly"],
+    sideEffects: ["Nausea (common)", "Transient blood pressure increase", "Facial flushing", "Darkening of skin/moles with chronic use"],
+    typicalDosing: "1.75mg as needed, max once per 24h",
+    route: "Subcutaneous injection or intranasal",
+    researchLevel: "Early Clinical",
+    stacksWith: [],
+    goals: ["Libido"]
+  },
+  "Hexarelin": {
+    fullName: "Hexarelin",
+    mechanism: "A potent synthetic ghrelin-receptor agonist. Stronger GH-releasing effect than Ipamorelin but with greater receptor desensitization over time.",
+    keyBenefits: ["Strong GH pulse", "Possible cardioprotective effects", "Lean mass support"],
+    sideEffects: ["Receptor desensitization with chronic use", "Cortisol and prolactin elevation", "Water retention"],
+    typicalDosing: "100-200mcg, 1-3x daily, cycled",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["CJC-1295"],
+    goals: ["Muscle Growth", "Anti-Aging"]
+  },
+  "5-Amino-1MQ": {
+    fullName: "5-Amino-1-Methylquinolinium",
+    mechanism: "A small-molecule NNMT inhibitor (technically not a peptide). Inhibits nicotinamide N-methyltransferase, raising cellular NAD+ and SAM and reducing white adipose tissue in mice.",
+    keyBenefits: ["Adipocyte size reduction (preclinical)", "Improved metabolic markers", "Possible muscle stem cell support"],
+    sideEffects: ["No human safety data", "Long-term effects unknown"],
+    typicalDosing: "50-150mg daily, oral",
+    route: "Oral capsule",
+    researchLevel: "Preclinical",
+    stacksWith: ["Tesamorelin", "MOTS-c"],
+    goals: ["Fat Loss", "Muscle Growth"]
+  },
+  "Tesamorelin": {
+    fullName: "Tesamorelin (Egrifta)",
+    mechanism: "A stabilized GHRH analog. FDA-approved for HIV-associated lipodystrophy; clinically reduces visceral adipose tissue and modestly improves lipid profile.",
+    keyBenefits: ["Visceral fat reduction (clinically validated)", "Improved IGF-1", "Cognitive improvement in older adults"],
+    sideEffects: ["Joint pain", "Injection site reactions", "Insulin resistance with prolonged use"],
+    typicalDosing: "1-2mg daily",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Ipamorelin"],
+    goals: ["Fat Loss", "Muscle Growth", "Anti-Aging"]
+  },
+  "MK-677": {
+    fullName: "Ibutamoren (MK-677)",
+    mechanism: "A non-peptide oral ghrelin-receptor agonist that increases pulsatile GH and IGF-1. Active orally with a long half-life (~24h).",
+    keyBenefits: ["Sustained GH/IGF-1 elevation", "Improved deep sleep", "Increased appetite and lean mass"],
+    sideEffects: ["Marked appetite increase", "Water retention", "Insulin resistance with chronic use", "Lethargy"],
+    typicalDosing: "10-25mg daily, oral",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Ipamorelin", "Epithalon"],
+    goals: ["Muscle Growth", "Sleep Quality", "Anti-Aging"]
+  },
+  "Thymosin Alpha-1": {
+    fullName: "Thymalfasin (Thymosin Alpha-1)",
+    mechanism: "A 28-amino-acid peptide naturally produced by the thymus. Modulates T-cell maturation and innate immune signaling. Approved in some countries for hepatitis B/C.",
+    keyBenefits: ["Immune system modulation", "Anti-inflammatory effects", "Adjuvant in chronic infections"],
+    sideEffects: ["Local injection site reactions", "Generally well-tolerated"],
+    typicalDosing: "1.6mg twice weekly",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["BPC-157"],
+    goals: ["Inflammation", "Anti-Aging"]
+  },
+  "MOTS-c": {
+    fullName: "MOTS-c (Mitochondrial Open Reading frame of the Twelve S rRNA-c)",
+    mechanism: "A 16-amino-acid peptide encoded by mitochondrial DNA. Activates AMPK, improving insulin sensitivity and metabolic flexibility in animal models.",
+    keyBenefits: ["Improved insulin sensitivity", "Mitochondrial function support", "Metabolic flexibility"],
+    sideEffects: ["Limited human safety data", "Possible fatigue at high doses"],
+    typicalDosing: "5-10mg, 2-3x weekly",
+    route: "Subcutaneous injection",
+    researchLevel: "Preclinical",
+    stacksWith: ["5-Amino-1MQ"],
+    goals: ["Fat Loss", "Anti-Aging"]
+  },
+  "AOD-9604": {
+    fullName: "AOD-9604 (HGH fragment 176-191)",
+    mechanism: "A synthetic fragment of the C-terminus of human growth hormone. Mimics GH's lipolytic effects without affecting blood sugar or IGF-1.",
+    keyBenefits: ["Targeted lipolysis", "No impact on glucose/IGF-1", "Mild appetite control"],
+    sideEffects: ["Modest effects in trials", "Injection site reactions"],
+    typicalDosing: "300mcg daily (typically morning, fasted)",
+    route: "Subcutaneous injection",
+    researchLevel: "Early Clinical",
+    stacksWith: ["CJC-1295"],
+    goals: ["Fat Loss"]
+  }
+};
+// ─────────────────────────────────────────────────────────────────
 
-// Tool-use schema: the API validates this and returns a parsed object,
-// so we never have to JSON.parse model text (which is fragile when long
-// strings contain quotes, apostrophes, or unescaped characters).
+// Build a compact list the model can read without burning tokens.
+const PEPTIDE_INDEX = Object.entries(PEPTIDE_DB)
+  .map(([name, d]) => `${name}: targets ${d.goals.join(', ')}`)
+  .join('\n');
+
+const SYSTEM = `You are a research peptide ranking engine. You will be given a user's health goals and a list of available peptides with their target areas.
+
+Your only job: pick the 4-5 best-matching peptides from the list and call return_peptide_recommendations with a matchScore (0-100) and a one-sentence personalized tagline for each, explaining why THIS peptide fits THIS user's goals.
+
+Only use peptide names from the provided list. Sort by matchScore descending.
+
+AVAILABLE PEPTIDES:
+${PEPTIDE_INDEX}`;
+
+// Tiny tool schema — only the fields the model actually decides.
+// All other peptide data is joined client-side from PEPTIDE_DB.
 const TOOL = {
   name: 'return_peptide_recommendations',
-  description: 'Return structured peptide recommendations matching the user\'s goals.',
+  description: 'Return a ranked list of 4-5 peptide picks for the user.',
   input_schema: {
     type: 'object',
     properties: {
-      peptides: {
+      recommendations: {
         type: 'array',
         items: {
           type: 'object',
           properties: {
-            name:          { type: 'string', description: 'Short name, e.g. "BPC-157"' },
-            fullName:      { type: 'string', description: 'Full name, e.g. "Body Protection Compound 157"' },
-            matchScore:    { type: 'number', description: 'Match score 0-100' },
-            tagline:       { type: 'string', description: 'One sentence primary-use statement' },
-            mechanism:     { type: 'string', description: '2-3 sentences explaining mechanism of action' },
-            keyBenefits:   { type: 'array', items: { type: 'string' } },
-            sideEffects:   { type: 'array', items: { type: 'string' } },
-            typicalDosing: { type: 'string', description: 'e.g. "250-500mcg daily"' },
-            route:         { type: 'string', description: 'e.g. "Subcutaneous injection"' },
-            researchLevel: { type: 'string', enum: ['Preclinical', 'Anecdotal', 'Early Clinical'] },
-            stacksWith:    { type: 'array', items: { type: 'string' } }
+            name:       { type: 'string', description: 'Must exactly match a name from the available peptide list.' },
+            matchScore: { type: 'number', description: 'Match score 0-100' },
+            tagline:    { type: 'string', description: 'One sentence tying this peptide to the user\'s specific goals.' }
           },
-          required: ['name','fullName','matchScore','tagline','mechanism','keyBenefits','sideEffects','typicalDosing','route','researchLevel','stacksWith']
+          required: ['name', 'matchScore', 'tagline']
         }
       }
     },
-    required: ['peptides']
+    required: ['recommendations']
   }
 };
 
@@ -349,7 +580,7 @@ async function getRecommendations() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
+        max_tokens: 600,
         system: SYSTEM,
         tools: [TOOL],
         tool_choice: { type: 'tool', name: 'return_peptide_recommendations' },
@@ -382,8 +613,7 @@ async function getRecommendations() {
     // Extract the structured tool_use block — the API has already validated
     // and parsed it into a real object, so no JSON.parse needed.
     const toolUse = (data.content || []).find(b => b.type === 'tool_use');
-    if (!toolUse || !toolUse.input || !Array.isArray(toolUse.input.peptides)) {
-      // Diagnostic info so we can see what actually came back next time.
+    if (!toolUse || !toolUse.input || !Array.isArray(toolUse.input.recommendations)) {
       console.error('Unexpected API response:', data);
       const blockTypes = (data.content || []).map(b => b.type).join(', ') || 'none';
       const stopReason = data.stop_reason || 'unknown';
@@ -392,7 +622,16 @@ async function getRecommendations() {
         `Model: ${data.model || 'unknown'}.`
       );
     }
-    const peptides = toolUse.input.peptides;
+
+    // Merge LLM ranking with the static DB. Skip any name the model
+    // hallucinated that isn't in PEPTIDE_DB.
+    const peptides = toolUse.input.recommendations
+      .filter(r => PEPTIDE_DB[r.name])
+      .map(r => ({ name: r.name, matchScore: r.matchScore, tagline: r.tagline, ...PEPTIDE_DB[r.name] }));
+
+    if (!peptides.length) {
+      throw new Error('Model returned only unknown peptide names. Please try again.');
+    }
 
     container.innerHTML = '';
     expandedCards.clear();
