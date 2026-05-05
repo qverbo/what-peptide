@@ -144,6 +144,18 @@
   .source-option:last-child { border-bottom: none; }
   .source-option:hover { background: #f7f7f4; color: #0f172a; }
 
+  .header-right { display: flex; align-items: center; gap: 18px; }
+  .protocol-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; background: #16a34a; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.01em;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .protocol-btn:hover { background: #15803d; }
+  .protocol-btn:active { transform: translateY(1px); }
+
   .skeleton { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; height: 150px; animation: pulse 1.8s ease infinite; }
 
   .legal { margin-top: 28px; font-size: 11px; color: #94a3b8; line-height: 1.85; padding-bottom: 60px; }
@@ -157,7 +169,10 @@
     <div class="dot"></div>
     <span class="logo-text">Peptide Advisor</span>
   </div>
-  <span class="disclaimer-small">Research use only</span>
+  <div class="header-right">
+    <span class="disclaimer-small">Research use only</span>
+    <a href="/protocols" class="protocol-btn">Protocol PDFs →</a>
+  </div>
 </header>
 
 <div class="hero">
