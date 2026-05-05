@@ -1173,10 +1173,13 @@ async function getRecommendations() {
     }
 
     // Merge LLM ranking with the static DB. Skip any name the model
-    // hallucinated that isn't in PEPTIDE_DB.
+    // hallucinated that isn't in PEPTIDE_DB. Re-sort by matchScore
+    // descending so the highest match always appears first, regardless
+    // of what order the model returned them in.
     const peptides = toolUse.input.recommendations
       .filter(r => PEPTIDE_DB[r.name])
-      .map(r => ({ name: r.name, matchScore: r.matchScore, tagline: r.tagline, ...PEPTIDE_DB[r.name] }));
+      .map(r => ({ name: r.name, matchScore: r.matchScore, tagline: r.tagline, ...PEPTIDE_DB[r.name] }))
+      .sort((a, b) => b.matchScore - a.matchScore);
 
     if (!peptides.length) {
       throw new Error('Model returned only unknown peptide names. Please try again.');
