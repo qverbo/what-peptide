@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocol Guides — Peptide Advisor</title>
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f7f7f4; font-family: 'DM Sans', system-ui, sans-serif; color: #0f172a; min-height: 100vh; }
+  ::selection { background: rgba(22,163,74,0.15); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  header {
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    padding: 18px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f7f7f4;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 8px rgba(22,163,74,0.35); }
+  .logo-text { font-size: 11px; letter-spacing: 0.15em; color: #64748b; text-transform: uppercase; font-weight: 500; }
+  .back-link {
+    font-size: 12px; color: #64748b; text-decoration: none;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: #0f172a; }
+
+  main {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+  }
+
+  .protocols-hero {
+    text-align: center;
+    max-width: 540px;
+    margin-bottom: 44px;
+  }
+  .protocols-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+  .protocols-hero p {
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.7;
+  }
+
+  .protocols-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 580px;
+  }
+
+  .protocol-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 14px;
+    padding: 26px 30px;
+    text-decoration: none;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    animation: fadeUp 0.4s ease both;
+  }
+  .protocol-card:nth-child(1) { animation-delay: 0.05s; }
+  .protocol-card:nth-child(2) { animation-delay: 0.12s; }
+  .protocol-card:nth-child(3) { animation-delay: 0.19s; }
+  .protocol-card:nth-child(4) { animation-delay: 0.26s; }
+
+  .protocol-card:hover {
+    border-color: rgba(0,0,0,0.18);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  .protocol-card-content { flex: 1; min-width: 0; }
+  .protocol-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: #0f172a;
+    letter-spacing: -0.005em;
+  }
+  .protocol-card p {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-top: 5px;
+  }
+  .protocol-arrow {
+    font-size: 22px;
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .protocol-card:hover .protocol-arrow {
+    color: #0f172a;
+    transform: translateX(4px);
+  }
+
+  /* Light pink variant for Women's Protocol */
+  .protocol-card-pink {
+    background: #fdf2f8;
+    border-color: #fbcfe8;
+  }
+  .protocol-card-pink:hover {
+    border-color: #f9a8d4;
+    box-shadow: 0 4px 20px rgba(219, 39, 119, 0.08);
+  }
+  .protocol-card-pink h2 { color: #831843; }
+  .protocol-card-pink p { color: #be185d; }
+  .protocol-card-pink .protocol-arrow { color: #db2777; }
+  .protocol-card-pink:hover .protocol-arrow { color: #831843; }
+
+  .protocols-footer {
+    margin-top: 44px;
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: center;
+    max-width: 540px;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">
+    <div class="dot"></div>
+    <span class="logo-text">Peptide Advisor</span>
+  </a>
+  <a href="/" class="back-link">← Back to recommender</a>
+</header>
+
+<main>
+  <div class="protocols-hero">
+    <h1>Protocol Guides</h1>
+    <p>Curated PDF protocols based on the latest research, written for real-world use.</p>
+  </div>
+
+  <div class="protocols-list">
+
+    <a href="YOUR-CHECKOUT-LINK" class="protocol-card protocol-card-pink">
+      <div class="protocol-card-content">
+        <h2>The Women's Peptide Protocol</h2>
+      </div>
+      <span class="protocol-arrow">→</span>
+    </a>
+
+    <a href="YOUR-CHECKOUT-LINK" class="protocol-card">
+      <div class="protocol-card-content">
+        <h2>Beginner's Safety Bible</h2>
+        <p>What Not to Stack</p>
+      </div>
+      <span class="protocol-arrow">→</span>
+    </a>
+
+    <a href="YOUR-CHECKOUT-LINK" class="protocol-card">
+      <div class="protocol-card-content">
+        <h2>The Gut Repair Stack</h2>
+      </div>
+      <span class="protocol-arrow">→</span>
+    </a>
+
+    <a href="YOUR-CHECKOUT-LINK" class="protocol-card">
+      <div class="protocol-card-content">
+        <h2>The Fat Loss Protocol</h2>
+      </div>
+      <span class="protocol-arrow">→</span>
+    </a>
+
+  </div>
+
+  <p class="protocols-footer">
+    For educational and informational purposes only. Always consult a qualified healthcare provider before beginning any peptide protocol.
+  </p>
+</main>
+
+</body>
+</html>
