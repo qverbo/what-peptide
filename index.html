@@ -159,26 +159,41 @@ const GOALS = [
   "Anxiety / Stress","Inflammation","Skin & Collagen","Joint Health"
 ];
 
-const SYSTEM = `You are a research peptide information database. Given health goals, return structured peptide recommendations.
+const SYSTEM = `You are a research peptide information database. Given a user's health goals, call the return_peptide_recommendations tool with 4-5 peptides sorted by matchScore descending. Be accurate, include real side effects, and note research limitations honestly.`;
 
-CRITICAL: Return ONLY a raw JSON array. No markdown, no backticks, no preamble. Start with [ and end with ].
-
-Return 4-5 peptides sorted by matchScore descending. Each object must have EXACTLY these fields:
-{
-  "name": "BPC-157",
-  "fullName": "Body Protection Compound 157",
-  "matchScore": 94,
-  "tagline": "One sentence primary use statement",
-  "mechanism": "2-3 sentences explaining mechanism of action",
-  "keyBenefits": ["benefit 1", "benefit 2", "benefit 3"],
-  "sideEffects": ["effect 1", "effect 2"],
-  "typicalDosing": "e.g. 250-500mcg daily",
-  "route": "e.g. Subcutaneous injection / Oral",
-  "researchLevel": "Preclinical",
-  "stacksWith": ["TB-500", "KPV"]
-}
-researchLevel must be one of exactly: "Preclinical", "Anecdotal", "Early Clinical"
-Be accurate. Include real side effects. Note research limitations honestly.`;
+// Tool-use schema: the API validates this and returns a parsed object,
+// so we never have to JSON.parse model text (which is fragile when long
+// strings contain quotes, apostrophes, or unescaped characters).
+const TOOL = {
+  name: 'return_peptide_recommendations',
+  description: 'Return structured peptide recommendations matching the user\'s goals.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      peptides: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            name:          { type: 'string', description: 'Short name, e.g. "BPC-157"' },
+            fullName:      { type: 'string', description: 'Full name, e.g. "Body Protection Compound 157"' },
+            matchScore:    { type: 'number', description: 'Match score 0-100' },
+            tagline:       { type: 'string', description: 'One sentence primary-use statement' },
+            mechanism:     { type: 'string', description: '2-3 sentences explaining mechanism of action' },
+            keyBenefits:   { type: 'array', items: { type: 'string' } },
+            sideEffects:   { type: 'array', items: { type: 'string' } },
+            typicalDosing: { type: 'string', description: 'e.g. "250-500mcg daily"' },
+            route:         { type: 'string', description: 'e.g. "Subcutaneous injection"' },
+            researchLevel: { type: 'string', enum: ['Preclinical', 'Anecdotal', 'Early Clinical'] },
+            stacksWith:    { type: 'array', items: { type: 'string' } }
+          },
+          required: ['name','fullName','matchScore','tagline','mechanism','keyBenefits','sideEffects','typicalDosing','route','researchLevel','stacksWith']
+        }
+      }
+    },
+    required: ['peptides']
+  }
+};
 
 // ── AFFILIATE LINKS ──────────────────────────────────────────────
 const AFFILIATE_LINKS = {
@@ -333,9 +348,11 @@ async function getRecommendations() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5',
         max_tokens: 1500,
         system: SYSTEM,
+        tools: [TOOL],
+        tool_choice: { type: 'tool', name: 'return_peptide_recommendations' },
         messages: [{ role: 'user', content: msg }]
       })
     });
@@ -362,16 +379,13 @@ async function getRecommendations() {
       throw new Error(data?.error?.message || `Request failed (HTTP ${res.status}).`);
     }
 
-    const text = (data.content || []).map(b => b.text || '').join('');
-    const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error('No valid JSON array in model response. Please try again.');
-
-    let peptides;
-    try {
-      peptides = JSON.parse(match[0]);
-    } catch (e) {
-      throw new Error(`Could not parse model output: ${e.message}`);
+    // Extract the structured tool_use block — the API has already validated
+    // and parsed it into a real object, so no JSON.parse needed.
+    const toolUse = (data.content || []).find(b => b.type === 'tool_use');
+    if (!toolUse || !toolUse.input || !Array.isArray(toolUse.input.peptides)) {
+      throw new Error('Model did not return structured peptide data. Please try again.');
     }
+    const peptides = toolUse.input.peptides;
 
     container.innerHTML = '';
     expandedCards.clear();
