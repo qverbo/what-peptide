@@ -843,6 +843,281 @@ const PEPTIDE_DB = {
     researchLevel: "Preclinical",
     stacksWith: ["GHK-Cu"],
     goals: ["Injury Recovery", "Joint Health", "Inflammation"]
+  },
+  "Methylene Blue": {
+    fullName: "Methylene Blue",
+    mechanism: "A phenothiazine dye that acts as an alternative electron acceptor in mitochondria, reduces oxidative stress, and inhibits MAO-A at higher doses.",
+    keyBenefits: ["Mitochondrial support", "Cognitive enhancement", "Antioxidant"],
+    sideEffects: ["Blue-tinged urine and stools", "Possible serotonin syndrome with SSRIs", "G6PD-deficiency contraindication"],
+    typicalDosing: "10-50mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["NAD+", "Glutathione"],
+    goals: ["Cognitive Performance", "Anti-Aging"]
+  },
+  "Phenibut": {
+    fullName: "Phenibut HCL (β-phenyl-γ-aminobutyric acid)",
+    mechanism: "A GABA-B receptor agonist with mild dopaminergic activity. Crosses the blood-brain barrier; produces anxiolytic, prosocial, and mild sedative effects.",
+    keyBenefits: ["Reduced social anxiety", "Calm focus", "Sleep aid at higher doses"],
+    sideEffects: ["Tolerance with regular use", "Severe withdrawal", "Rebound anxiety"],
+    typicalDosing: "250-500mg, max 2-3x weekly to avoid tolerance",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["L-Theanine", "Fasoracetam"],
+    goals: ["Anxiety / Stress", "Sleep Quality"]
+  },
+  "Dihexa": {
+    fullName: "Dihexa (N-hexanoic-Tyr-Ile-amino hexanoic amide)",
+    mechanism: "A small molecule derived from angiotensin IV. Binds HGF/c-Met receptors, dramatically increasing synaptogenesis in animal models.",
+    keyBenefits: ["Strong synaptogenesis", "Memory enhancement", "Neuroprotection"],
+    sideEffects: ["Limited human safety data", "Theoretical cancer risk via HGF pathway"],
+    typicalDosing: "5-15mg daily",
+    route: "Oral or transdermal",
+    researchLevel: "Preclinical",
+    stacksWith: ["Semax", "P21"],
+    goals: ["Cognitive Performance"]
+  },
+  "Noopept": {
+    fullName: "Noopept (Omberacetam)",
+    mechanism: "A dipeptide nootropic structurally related to racetams. Increases BDNF and NGF expression, modulates AMPA and NMDA receptors.",
+    keyBenefits: ["Improved memory", "Neuroprotective", "Mild anxiolytic"],
+    sideEffects: ["Headache (often relieved by choline)", "Irritability at high doses"],
+    typicalDosing: "10-30mg daily",
+    route: "Oral or sublingual",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Alpha GPC", "Piracetam"],
+    goals: ["Cognitive Performance"]
+  },
+  "9-Me-BC": {
+    fullName: "9-Methyl-β-carboline",
+    mechanism: "A β-carboline alkaloid that increases dopaminergic activity, mitochondrial biogenesis, and neurotrophic factors (BDNF, GDNF).",
+    keyBenefits: ["Dopaminergic boost", "Possible neuroprotection", "Cognitive enhancement"],
+    sideEffects: ["Limited human data", "Possible MAO inhibition concerns"],
+    typicalDosing: "15-50mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["Bromantane"],
+    goals: ["Cognitive Performance", "Anti-Aging"]
+  },
+  "Piracetam": {
+    fullName: "Piracetam",
+    mechanism: "The original racetam (1964). Modulates AMPA receptors and membrane fluidity, with subtle but well-tolerated cognitive effects.",
+    keyBenefits: ["Mild cognitive enhancement", "Increased cerebral blood flow", "Neuroprotection"],
+    sideEffects: ["Headache (relieved by choline)", "Generally very well-tolerated"],
+    typicalDosing: "800-2400mg, 2-3x daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Alpha GPC", "Noopept"],
+    goals: ["Cognitive Performance"]
+  },
+  "NSI-189": {
+    fullName: "NSI-189",
+    mechanism: "A neurogenic compound that stimulates hippocampal neurogenesis. Investigated for major depression and cognitive disorders.",
+    keyBenefits: ["Hippocampal neurogenesis", "Mood improvement", "Memory"],
+    sideEffects: ["Limited long-term data", "Possible vivid dreams"],
+    typicalDosing: "20-40mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Semax", "Bromantane"],
+    goals: ["Cognitive Performance", "Anxiety / Stress"]
+  },
+  "Bemethyl": {
+    fullName: "Bemethyl",
+    mechanism: "A Russian-developed actoprotector. Improves stamina, hypoxia tolerance, and mitochondrial function via gluconeogenesis activation.",
+    keyBenefits: ["Endurance", "Hypoxia tolerance", "Reduced fatigue"],
+    sideEffects: ["Mild GI upset", "Generally well-tolerated"],
+    typicalDosing: "100-250mg, 2x daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Bromantane"],
+    goals: ["Cognitive Performance", "Anti-Aging"]
+  },
+  "Alpha GPC": {
+    fullName: "Alpha-GPC (L-Alpha glycerylphosphorylcholine)",
+    mechanism: "A high-bioavailability choline source that crosses the blood-brain barrier and serves as an acetylcholine precursor.",
+    keyBenefits: ["Acetylcholine support", "Cognitive enhancement", "GH release with exercise"],
+    sideEffects: ["Headache at high doses", "Possible link to long-term stroke risk in observational data"],
+    typicalDosing: "300-600mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Piracetam", "Noopept"],
+    goals: ["Cognitive Performance"]
+  },
+  "PRL-8-53": {
+    fullName: "PRL-8-53",
+    mechanism: "A synthetic cholinergic compound studied in the 1970s. Modulates dopamine release and acetylcholine pathways. Notable for memory enhancement in human trials.",
+    keyBenefits: ["Dramatic memory enhancement", "Recall", "Learning"],
+    sideEffects: ["Limited modern safety data", "Mild stimulation"],
+    typicalDosing: "5-20mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Alpha GPC", "Piracetam"],
+    goals: ["Cognitive Performance"]
+  },
+  "RU58841": {
+    fullName: "RU58841",
+    mechanism: "A non-steroidal topical antiandrogen. Blocks DHT binding at the hair follicle without significant systemic absorption.",
+    keyBenefits: ["Targeted hair loss prevention", "No systemic suppression"],
+    sideEffects: ["Limited long-term safety data", "Possible scalp irritation"],
+    typicalDosing: "50-100mg topically daily",
+    route: "Topical (dissolved in solution)",
+    researchLevel: "Preclinical",
+    stacksWith: ["GHK-Cu"],
+    goals: ["Skin & Collagen"]
+  },
+  "Pramiracetam": {
+    fullName: "Pramiracetam",
+    mechanism: "A more potent racetam that increases acetylcholine release and high-affinity choline uptake.",
+    keyBenefits: ["Memory enhancement", "Focus", "More potent than piracetam"],
+    sideEffects: ["Headache without choline support", "Fat-soluble (take with food)"],
+    typicalDosing: "250-500mg, 2-3x daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Alpha GPC"],
+    goals: ["Cognitive Performance"]
+  },
+  "Oxiracetam": {
+    fullName: "Oxiracetam",
+    mechanism: "A water-soluble racetam with mild stimulant character. Modulates AMPA and NMDA receptors and increases acetylcholine release.",
+    keyBenefits: ["Logical thinking", "Mild stimulation", "Memory"],
+    sideEffects: ["Insomnia if dosed late", "Headache"],
+    typicalDosing: "750-1500mg, 2x daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Alpha GPC", "Piracetam"],
+    goals: ["Cognitive Performance"]
+  },
+  "L-Theanine": {
+    fullName: "L-Theanine",
+    mechanism: "A non-protein amino acid found in tea. Increases alpha brain wave activity and modulates GABA, serotonin, and dopamine pathways.",
+    keyBenefits: ["Calm focus", "Anxiety reduction", "Smoother caffeine experience"],
+    sideEffects: ["Generally very well-tolerated", "Mild headache rare"],
+    typicalDosing: "100-400mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Phenibut", "Caffeine"],
+    goals: ["Anxiety / Stress", "Cognitive Performance", "Sleep Quality"]
+  },
+  "Fasoracetam": {
+    fullName: "Fasoracetam",
+    mechanism: "A racetam that upregulates GABA-B receptors and modulates glutamate metabotropic receptors.",
+    keyBenefits: ["Anxiolytic", "Mild cognitive enhancement", "Helps reset phenibut tolerance"],
+    sideEffects: ["Mild fatigue", "Possible tolerance concerns"],
+    typicalDosing: "10-100mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Phenibut"],
+    goals: ["Anxiety / Stress", "Cognitive Performance"]
+  },
+  "Eutropoflavin": {
+    fullName: "4'-DMA-7,8-DHF (Eutropoflavin)",
+    mechanism: "A flavone derivative that acts as a TrkB receptor agonist, mimicking BDNF effects with better oral bioavailability than 7,8-DHF.",
+    keyBenefits: ["BDNF mimetic", "Neuroprotection", "Possible mood support"],
+    sideEffects: ["Limited human data", "Generally well-tolerated in animal studies"],
+    typicalDosing: "10mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["Semax", "NSI-189"],
+    goals: ["Cognitive Performance"]
+  },
+  "Coluracetam": {
+    fullName: "Coluracetam",
+    mechanism: "A racetam that selectively enhances high-affinity choline uptake. Notable subjective effects on visual and auditory processing.",
+    keyBenefits: ["Vision/audition enhancement", "Mild cognitive boost", "Possible anxiolytic"],
+    sideEffects: ["Generally well-tolerated", "Headache rare"],
+    typicalDosing: "5-20mg, 2-3x daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["Alpha GPC"],
+    goals: ["Cognitive Performance"]
+  },
+  "PQQ": {
+    fullName: "PQQ Disodium (Pyrroloquinoline Quinone)",
+    mechanism: "A redox cofactor that stimulates mitochondrial biogenesis via PGC-1α activation. Cellular energy and antioxidant support.",
+    keyBenefits: ["Mitochondrial biogenesis", "Energy support", "Sleep quality"],
+    sideEffects: ["Generally well-tolerated", "Possible headache at high doses"],
+    typicalDosing: "10-40mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["NAD+", "MOTS-c"],
+    goals: ["Anti-Aging", "Cognitive Performance", "Sleep Quality"]
+  },
+  "Synephrine": {
+    fullName: "p-Synephrine (Citrus aurantium extract)",
+    mechanism: "A beta-3 adrenergic agonist with mild sympathomimetic effect. Used as a thermogenic and appetite suppressant.",
+    keyBenefits: ["Mild thermogenesis", "Fat loss", "Appetite suppression"],
+    sideEffects: ["Increased heart rate", "Blood pressure", "Jitters"],
+    typicalDosing: "10-50mg, pre-workout",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Caffeine"],
+    goals: ["Fat Loss"]
+  },
+  "Sunifiram": {
+    fullName: "Sunifiram (DM-235)",
+    mechanism: "A piperazine-based ampakine that potentiates AMPA receptor activity. Substantially more potent than piracetam in animal models.",
+    keyBenefits: ["Potent cognitive enhancement", "Learning", "Memory"],
+    sideEffects: ["Limited human data", "Headache", "Possible neurotoxicity at high doses"],
+    typicalDosing: "5-10mg daily",
+    route: "Oral",
+    researchLevel: "Preclinical",
+    stacksWith: ["Alpha GPC"],
+    goals: ["Cognitive Performance"]
+  },
+  "Enclomiphene": {
+    fullName: "Enclomiphene Citrate",
+    mechanism: "The trans-isomer of clomiphene. A SERM that blocks estrogen receptors at the hypothalamus, raising GnRH/LH/FSH. Cleaner than clomiphene (lacks zuclomiphene).",
+    keyBenefits: ["Increases endogenous testosterone", "Fewer mood side effects than clomiphene", "Fertility support"],
+    sideEffects: ["Mild visual disturbances", "Headache"],
+    typicalDosing: "12.5-25mg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["HCG"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "Clomiphene": {
+    fullName: "Clomiphene Citrate",
+    mechanism: "A SERM containing both enclomiphene and zuclomiphene isomers. Blocks hypothalamic estrogen receptors, raising LH/FSH and endogenous testosterone.",
+    keyBenefits: ["Significantly raises testosterone", "Fertility restoration", "Classic PCT compound"],
+    sideEffects: ["Mood changes", "Vision disturbances (zuclomiphene)", "Long half-life"],
+    typicalDosing: "25-50mg daily for PCT, 12.5mg daily for long-term TRT alternative",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["HCG", "Letrozole"],
+    goals: ["Libido", "Muscle Growth"]
+  },
+  "Liothyronine T3": {
+    fullName: "Liothyronine (T3)",
+    mechanism: "The active form of thyroid hormone. Directly binds nuclear thyroid receptors, dramatically increasing metabolic rate, lipolysis, and protein synthesis.",
+    keyBenefits: ["Significant fat loss", "Increased metabolism", "Improved energy"],
+    sideEffects: ["Heart palpitations", "Muscle catabolism", "Thyroid axis suppression with chronic use", "Requires medical supervision"],
+    typicalDosing: "12.5-50mcg daily, titrated",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Levothyroxine T4"],
+    goals: ["Fat Loss"]
+  },
+  "Letrozole": {
+    fullName: "Letrozole",
+    mechanism: "A non-steroidal aromatase inhibitor. Blocks the conversion of androgens to estrogens. Used in PCT, on-cycle estrogen control, and breast cancer treatment.",
+    keyBenefits: ["Sharp estrogen reduction", "Gynecomastia reversal", "Raises testosterone"],
+    sideEffects: ["Joint pain", "Lipid changes", "Libido drop if estrogen too low", "Bone density concerns"],
+    typicalDosing: "0.25-1mg, 2-3x weekly (on cycle); 1.25-2.5mg daily (gyno reversal)",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Clomiphene"],
+    goals: ["Muscle Growth"]
+  },
+  "Levothyroxine T4": {
+    fullName: "Levothyroxine (T4)",
+    mechanism: "The synthetic storage form of thyroid hormone. Slowly converted to T3 in tissues, providing a smoother metabolic effect than T3 alone.",
+    keyBenefits: ["Sustained thyroid support", "Smoother kinetics than T3", "Hypothyroidism replacement"],
+    sideEffects: ["Heart palpitations at high doses", "T3 conversion variable between individuals"],
+    typicalDosing: "25-150mcg daily",
+    route: "Oral",
+    researchLevel: "Early Clinical",
+    stacksWith: ["Liothyronine T3"],
+    goals: ["Fat Loss"]
   }
 };
 // ─────────────────────────────────────────────────────────────────
@@ -852,9 +1127,14 @@ const PEPTIDE_INDEX = Object.entries(PEPTIDE_DB)
   .map(([name, d]) => `${name}: targets ${d.goals.join(', ')}`)
   .join('\n');
 
-const SYSTEM = `You are a research peptide ranking engine. You will be given a user's health goals and a list of available peptides with their target areas.
+const SYSTEM = `You are a research peptide ranking engine. You will be given a user's health goals, optional additional context, and a list of available peptides with their target areas.
 
-Your only job: pick the 4-5 best-matching peptides from the list and call return_peptide_recommendations with a matchScore (0-100) and a one-sentence personalized tagline for each, explaining why THIS peptide fits THIS user's goals.
+Your only job: pick the 4-5 best-matching peptides from the list and call return_peptide_recommendations with a matchScore (0-100) and a one-sentence personalized tagline for each.
+
+Scoring rules:
+- Goals are the baseline signal — peptides whose target areas overlap with the user's goals score higher.
+- Additional context (injuries, conditions, lifestyle, current stack, sensitivities, gender, age, current cycle phase, etc.) is a STRONG signal that should meaningfully shift scores. A peptide that perfectly matches the goals but conflicts with the context (e.g. testosterone suppression when the user mentions trying for fertility) should be scored down or dropped entirely. A peptide that is especially well-suited to the specific context (e.g. BPC-157 + TB-500 blend for an active soft-tissue injury) should be scored up.
+- The tagline must reference the user's specific situation when context was provided — not generic copy.
 
 Only use peptide names from the provided list. Sort by matchScore descending.
 
@@ -911,7 +1191,10 @@ const AFFILIATE_LINKS = {
   "Selank":         [{ label: "Injectable (5mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/selank" }],
   "Epithalon":      [{ label: "Oral (10mg capsules)", url: "https://YOUR-AFFILIATE-LINK.com/epithalon" }],
   "Retatrutide":    [{ label: "Injectable", url: "https://YOUR-AFFILIATE-LINK.com/retatrutide" }],
-  "Bromantane":     [{ label: "Oral", url: "https://YOUR-AFFILIATE-LINK.com/bromantane" }],
+  "Bromantane": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/bromantane-caps" },
+    { label: "Powder (5g)",         url: "https://YOUR-AFFILIATE-LINK.com/bromantane-powder" }
+  ],
   "DSIP":           [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/dsip" }],
   "PT-141":         [{ label: "Injectable (10mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/pt-141" }],
   "Hexarelin":      [{ label: "Injectable (2mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/hexarelin" }],
@@ -965,7 +1248,55 @@ const AFFILIATE_LINKS = {
   "Myostatin Inhibitor": [{ label: "Injectable (1mg vial)", url: "https://YOUR-AFFILIATE-LINK.com/myostatin" }],
 
   // Blends
-  "BPC-157 + TB-500 Blend": [{ label: "Injectable (blend vial)", url: "https://YOUR-AFFILIATE-LINK.com/bpc-tb-blend" }]
+  "BPC-157 + TB-500 Blend": [{ label: "Injectable (blend vial)", url: "https://YOUR-AFFILIATE-LINK.com/bpc-tb-blend" }],
+
+  // Nootropics & cognitive enhancers
+  "Methylene Blue": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/methylene-blue-caps" },
+    { label: "Liquid solution",     url: "https://YOUR-AFFILIATE-LINK.com/methylene-blue-solution" }
+  ],
+  "Phenibut": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/phenibut-caps" },
+    { label: "Powder (50g)",        url: "https://YOUR-AFFILIATE-LINK.com/phenibut-powder" }
+  ],
+  "Dihexa": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/dihexa-caps" },
+    { label: "Powder (500mg)",      url: "https://YOUR-AFFILIATE-LINK.com/dihexa-powder" }
+  ],
+  "Noopept": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/noopept-caps" },
+    { label: "Powder (10g)",        url: "https://YOUR-AFFILIATE-LINK.com/noopept-powder" }
+  ],
+  "9-Me-BC": [
+    { label: "Oral (60 capsules)",  url: "https://YOUR-AFFILIATE-LINK.com/9-me-bc-caps" },
+    { label: "Powder (500mg)",      url: "https://YOUR-AFFILIATE-LINK.com/9-me-bc-powder" }
+  ],
+  "Piracetam":      [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/piracetam" }],
+  "NSI-189": [
+    { label: "Oral capsules (Phosphate)", url: "https://YOUR-AFFILIATE-LINK.com/nsi-189-caps" },
+    { label: "Powder (Phosphate)",        url: "https://YOUR-AFFILIATE-LINK.com/nsi-189-phosphate" },
+    { label: "Powder (Free Base)",        url: "https://YOUR-AFFILIATE-LINK.com/nsi-189-free-base" }
+  ],
+  "Bemethyl":       [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/bemethyl" }],
+  "Alpha GPC":      [{ label: "Powder (50g)", url: "https://YOUR-AFFILIATE-LINK.com/alpha-gpc" }],
+  "PRL-8-53":       [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/prl-8-53" }],
+  "RU58841":        [{ label: "Powder (5g, topical)", url: "https://YOUR-AFFILIATE-LINK.com/ru58841" }],
+  "Pramiracetam":   [{ label: "Powder (10g)", url: "https://YOUR-AFFILIATE-LINK.com/pramiracetam" }],
+  "Oxiracetam":     [{ label: "Powder (50g)", url: "https://YOUR-AFFILIATE-LINK.com/oxiracetam" }],
+  "L-Theanine":     [{ label: "Powder (100g)", url: "https://YOUR-AFFILIATE-LINK.com/l-theanine" }],
+  "Fasoracetam":    [{ label: "Powder (1g)", url: "https://YOUR-AFFILIATE-LINK.com/fasoracetam" }],
+  "Eutropoflavin":  [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/eutropoflavin" }],
+  "Coluracetam":    [{ label: "Powder (1g)", url: "https://YOUR-AFFILIATE-LINK.com/coluracetam" }],
+  "PQQ":            [{ label: "Powder (1g)", url: "https://YOUR-AFFILIATE-LINK.com/pqq" }],
+  "Synephrine":     [{ label: "Liquid solution (1500mg)", url: "https://YOUR-AFFILIATE-LINK.com/synephrine" }],
+  "Sunifiram":      [{ label: "Powder (10g)", url: "https://YOUR-AFFILIATE-LINK.com/sunifiram" }],
+
+  // PCT, ancillaries, thyroid
+  "Enclomiphene":   [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/enclomiphene" }],
+  "Clomiphene":     [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/clomiphene" }],
+  "Liothyronine T3":[{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/t3" }],
+  "Letrozole":      [{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/letrozole" }],
+  "Levothyroxine T4":[{ label: "Oral (60 capsules)", url: "https://YOUR-AFFILIATE-LINK.com/t4" }]
 };
 // ─────────────────────────────────────────────────────────────────
 
